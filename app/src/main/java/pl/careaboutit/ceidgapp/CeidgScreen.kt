@@ -23,6 +23,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import pl.careaboutit.ceidgapp.ui.screens.SearchByNipResultScreen
+import pl.careaboutit.ceidgapp.ui.screens.SearchByNipScreen
 import pl.careaboutit.ceidgapp.viewmodels.CompanyViewModel
 
 enum class CeidgScreen(@StringRes val title: Int) {
@@ -84,10 +86,10 @@ fun CeidgApp(
                 .padding(innerPadding)
         ) {
             composable(route = CeidgScreen.SearchByNip.name) {
-                // TODO add screen for search by nip
+                SearchByNipScreen(navController = navController, viewModel = viewModel)
             }
             composable(route = CeidgScreen.SearchByNipResult.name) {
-                // TODO add screen for search by nip result
+                SearchByNipResultScreen(navController = navController, viewModel = viewModel)
             }
         }
     }

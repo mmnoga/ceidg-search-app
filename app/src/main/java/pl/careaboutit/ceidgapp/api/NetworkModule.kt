@@ -11,7 +11,7 @@ import java.util.concurrent.TimeUnit
 class NetworkModule {
 
     // val token: String = BuildConfig.CEIDG_API_TOKEN
-    val token: String = "MY_TOKEN"
+    val token: String = "eyJraWQiOiJjZWlkZyIsImFsZyI6IkhTNTEyIn0.eyJnaXZlbl9uYW1lIjoiTWFyY2luIiwicGVzZWwiOiI4MDA4MjExNDg1OSIsImlhdCI6MTcxMjE3NDY3NiwiZmFtaWx5X25hbWUiOiJOb2dhIiwiY2xpZW50X2lkIjoiVVNFUi04MDA4MjExNDg1OS1NQVJDSU4tTk9HQSJ9.yksC7ljMfDhKmj_tHsK1Z3zvIvgu5JZibq7I4p-YBQFc5uaWz5Iu_Gq2AsBjB4o-yiFUKKR6k3M2QWBGxFd2fQ"
 
     val baseUrl: String = "https://dane.biznes.gov.pl/api/ceidg/v2/"
 
