@@ -1,3 +1,17 @@
 <resources>
-    <string name="app_name">CeidgApp</string>
+    <string name="app_name">CEiDG Przeglądanie Wpisów</string>
+
+    <string name="nip">NIP</string>
+
+    <string name="text_search">Kryteria wyszukiwania</string>
+    <string name="text_result">Wyniki wyszukiwania</string>
+    <string name="text_no_results">Brak wpisów spełniających podane kryteria</string>
+
+    <string name="name">Nazwa</string>
+    <string name="address">Adres</string>
+    <string name="start_data">Data rozpoczęcia działalności</string>
+    <string name="status">Status</string>
+
+    <string name="search_btn">Szukaj</string>
+    <string name="back_btn">Powrót</string>
 </resources>
