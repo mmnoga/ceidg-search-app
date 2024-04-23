@@ -7,10 +7,12 @@ import androidx.compose.runtime.Composable
 @Composable
 fun CustomButton(
     text: String,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    enabled: Boolean = true
 ) {
     ElevatedButton(
-        onClick = onClick
+        onClick = onClick,
+        enabled = enabled
     ) {
         Text(text = text)
     }

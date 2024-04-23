@@ -20,6 +20,7 @@ import pl.careaboutit.ceidgapp.R
 import pl.careaboutit.ceidgapp.ui.components.CustomButton
 import pl.careaboutit.ceidgapp.ui.components.CustomText
 import pl.careaboutit.ceidgapp.ui.components.CustomTextField
+import pl.careaboutit.ceidgapp.utils.isNipValid
 import pl.careaboutit.ceidgapp.viewmodels.CompanyViewModel
 
 @Composable
@@ -28,6 +29,7 @@ fun SearchByNipScreen(
     viewModel: CompanyViewModel
 ) {
     var nipValue by remember { mutableStateOf("") }
+    var isNipValid by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -43,15 +45,20 @@ fun SearchByNipScreen(
             value = nipValue,
             onValueChange = {
                 nipValue = it
+                isNipValid = isNipValid(it)
             },
+            isError = !isNipValid && nipValue.isNotEmpty()
         )
         Spacer(modifier = Modifier.height(15.dp))
         CustomButton(
             text = stringResource(id = R.string.search_btn),
             onClick = {
-                viewModel.searchCompanyByNip(nipValue)
-                navController.navigate(CeidgScreen.SearchByNipResult.name)
-            }
+                if (isNipValid) {
+                    viewModel.searchCompanyByNip(nipValue)
+                    navController.navigate(CeidgScreen.SearchByNipResult.name)
+                }
+            },
+            enabled = isNipValid && nipValue.isNotEmpty()
         )
     }
 }

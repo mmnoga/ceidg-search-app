@@ -13,7 +13,8 @@ import androidx.compose.ui.text.input.KeyboardType
 fun CustomTextField(
     label: String,
     value: String,
-    onValueChange: (String) -> Unit
+    onValueChange: (String) -> Unit,
+    isError: Boolean = false
 ) {
     OutlinedTextField(
         value = value,
@@ -24,6 +25,7 @@ fun CustomTextField(
         ),
         leadingIcon = {
             Icon(imageVector = Icons.Default.Search, contentDescription = "Search icon")
-        }
+        },
+        isError = isError
     )
 }
