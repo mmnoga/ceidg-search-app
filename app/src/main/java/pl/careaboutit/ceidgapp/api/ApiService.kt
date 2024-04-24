@@ -6,5 +6,13 @@ import retrofit2.http.Query
 
 interface ApiService {
     @GET("firmy")
-    suspend fun getCompanyData(@Query("nip") nip: String): CompanyDataResponse
+    suspend fun getCompanyData(
+        @Query("nip") nip: String
+    ): CompanyDataResponse
+
+    @GET("firmy")
+    suspend fun getCompaniesByPkdAndCity(
+        @Query("pkd") pkd: String,
+        @Query("miasto") city: String
+    ): CompanyDataResponse
 }

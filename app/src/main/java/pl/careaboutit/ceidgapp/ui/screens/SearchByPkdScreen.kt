@@ -13,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import pl.careaboutit.ceidgapp.CeidgScreen
@@ -44,7 +45,8 @@ fun SearchByPkdScreen(
             value = pkdValue,
             onValueChange = {
                 pkdValue = it
-            }
+            },
+            keyboardType = KeyboardType.Text
         )
         Spacer(modifier = Modifier.height(15.dp))
         CustomTextField(
@@ -52,13 +54,14 @@ fun SearchByPkdScreen(
             value = cityValue,
             onValueChange = {
                 cityValue = it
-            }
+            },
+            keyboardType = KeyboardType.Text
         )
         Spacer(modifier = Modifier.height(15.dp))
         CustomButton(
             text = stringResource(id = R.string.search_btn),
             onClick = {
-                viewModel.searchCompanyByPkd(pkdValue)
+                viewModel.searchCompanyByPkd(pkdValue, cityValue)
                 navController.navigate(CeidgScreen.SearchByPkdResult.name)
             }
         )

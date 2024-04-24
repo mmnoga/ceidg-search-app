@@ -37,7 +37,6 @@ class CompanyViewModel : ViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val data = apiService.getCompanyData(nip)
-                Timber.i(data.toString())
                 _stateFlow.value = _stateFlow.value.copy(
                     companyData = data,
                     isLoading = false
@@ -52,7 +51,21 @@ class CompanyViewModel : ViewModel() {
         }
     }
 
-    fun searchCompanyByPkd(pkd: String) {
-
+    fun searchCompanyByPkd(pkd: String, city: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val data = apiService.getCompaniesByPkdAndCity(pkd = pkd, city = city)
+                _stateFlow.value = _stateFlow.value.copy(
+                    companyData = data,
+                    isLoading = false
+                )
+            } catch (exception: HttpException) {
+                Timber.e(exception)
+                _stateFlow.value = _stateFlow.value.copy(
+                    isLoading = false,
+                    error = exception.code().toString()
+                )
+            }
+        }
     }
 }

@@ -2,6 +2,7 @@
     <string name="app_name">CEiDG Przeglądanie Wpisów</string>
 
     <string name="nip">NIP</string>
+    <string name="regon">REGON</string>
     <string name="pkd">Rodzaj działalności (kod PKD)</string>
     <string name="city">Miejscowość</string>
 
@@ -10,6 +11,8 @@
     <string name="text_no_results">Brak wpisów spełniających podane kryteria</string>
 
     <string name="name">Nazwa</string>
+    <string name="company">Firma przedsiębiorcy</string>
+    <string name="enterpreneur">Przedsiębiorca</string>
     <string name="address">Adres</string>
     <string name="start_data">Data rozpoczęcia działalności</string>
     <string name="status">Status</string>
@@ -17,6 +20,7 @@
     <string name="search_btn">Szukaj</string>
     <string name="back_icon_description">Ikona powrotu</string>
     <string name="home_icon_description">Ikona domowa</string>
+    <string name="search_icon_description">Ikona wyszukiwania</string>
 
     <string name="main_btn_nip_search">Wyszukaj po numerze NIP</string>
     <string name="main_btn_pkd_search">Wyszukaj po rodzaju działalności w danej miejscowości</string>

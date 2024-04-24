@@ -13,6 +13,5 @@ data class Address(
     val kraj: String,
     val kod: String,
     val terc: String,
-    val simc: String,
-    val ulic: String
+    val simc: String
 )
