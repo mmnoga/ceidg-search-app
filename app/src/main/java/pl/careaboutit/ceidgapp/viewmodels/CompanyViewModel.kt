@@ -51,4 +51,8 @@ class CompanyViewModel : ViewModel() {
             }
         }
     }
+
+    fun searchCompanyByPkd(pkd: String) {
+
+    }
 }

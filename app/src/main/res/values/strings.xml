@@ -2,6 +2,8 @@
     <string name="app_name">CEiDG Przeglądanie Wpisów</string>
 
     <string name="nip">NIP</string>
+    <string name="pkd">Rodzaj działalności (kod PKD)</string>
+    <string name="city">Miejscowość</string>
 
     <string name="text_search">Kryteria wyszukiwania</string>
     <string name="text_result">Wyniki wyszukiwania</string>
@@ -13,5 +15,12 @@
     <string name="status">Status</string>
 
     <string name="search_btn">Szukaj</string>
-    <string name="back_btn">Powrót</string>
+    <string name="back_icon_description">Ikona powrotu</string>
+    <string name="home_icon_description">Ikona domowa</string>
+
+    <string name="main_btn_nip_search">Wyszukaj po numerze NIP</string>
+    <string name="main_btn_pkd_search">Wyszukaj po rodzaju działalności w danej miejscowości</string>
+
+    <string name="search_by_nip">Wyszukiwanie po nr NIP</string>
+    <string name="search_by_pkd">Wyszukiwanie po profilu działalności</string>
 </resources>

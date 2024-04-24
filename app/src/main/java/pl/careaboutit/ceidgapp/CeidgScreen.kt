@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -23,13 +24,19 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import pl.careaboutit.ceidgapp.ui.screens.HomeMenuScreen
 import pl.careaboutit.ceidgapp.ui.screens.SearchByNipResultScreen
 import pl.careaboutit.ceidgapp.ui.screens.SearchByNipScreen
+import pl.careaboutit.ceidgapp.ui.screens.SearchByPkdResultScreen
+import pl.careaboutit.ceidgapp.ui.screens.SearchByPkdScreen
 import pl.careaboutit.ceidgapp.viewmodels.CompanyViewModel
 
 enum class CeidgScreen(@StringRes val title: Int) {
-    SearchByNip(title = R.string.app_name),
-    SearchByNipResult(title = R.string.text_result)
+    HomeMenu(title = R.string.app_name),
+    SearchByNip(title = R.string.search_by_nip),
+    SearchByNipResult(title = R.string.text_result),
+    SearchByPkd(title = R.string.search_by_pkd),
+    SearchByPkdResult(title = R.string.text_result)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -51,7 +58,14 @@ fun CeidgAppBar(
                 IconButton(onClick = navigateUp) {
                     Icon(
                         imageVector = Icons.Filled.ArrowBack,
-                        contentDescription = stringResource(R.string.back_btn)
+                        contentDescription = stringResource(R.string.back_icon_description)
+                    )
+                }
+            } else {
+                IconButton(onClick = { }) {
+                    Icon(
+                        imageVector = Icons.Filled.Home,
+                        contentDescription = stringResource(R.string.home_icon_description)
                     )
                 }
             }
@@ -66,7 +80,7 @@ fun CeidgApp(
 ) {
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentScreen = CeidgScreen.valueOf(
-        backStackEntry?.destination?.route ?: CeidgScreen.SearchByNip.name
+        backStackEntry?.destination?.route ?: CeidgScreen.HomeMenu.name
     )
 
     Scaffold(
@@ -80,16 +94,25 @@ fun CeidgApp(
     ) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = CeidgScreen.SearchByNip.name,
+            startDestination = CeidgScreen.HomeMenu.name,
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
+            composable(route = CeidgScreen.HomeMenu.name) {
+                HomeMenuScreen(navController = navController)
+            }
             composable(route = CeidgScreen.SearchByNip.name) {
                 SearchByNipScreen(navController = navController, viewModel = viewModel)
             }
             composable(route = CeidgScreen.SearchByNipResult.name) {
                 SearchByNipResultScreen(navController = navController, viewModel = viewModel)
+            }
+            composable(route = CeidgScreen.SearchByPkd.name) {
+                SearchByPkdScreen(navController = navController, viewModel = viewModel)
+            }
+            composable(route = CeidgScreen.SearchByPkdResult.name) {
+                SearchByPkdResultScreen(navController = navController, viewModel = viewModel)
             }
         }
     }
