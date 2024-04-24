@@ -4,14 +4,15 @@ import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import pl.careaboutit.ceidgapp.BuildConfig
 import retrofit2.Retrofit
 import retrofit2.converter.kotlinx.serialization.asConverterFactory
 import java.util.concurrent.TimeUnit
 
+
 class NetworkModule {
 
-    // val token: String = BuildConfig.CEIDG_API_TOKEN
-    val token: String = "MY_KEY"
+    val token: String = BuildConfig.CEIDG_API_KEY
 
     val baseUrl: String = "https://dane.biznes.gov.pl/api/ceidg/v2/"
 
