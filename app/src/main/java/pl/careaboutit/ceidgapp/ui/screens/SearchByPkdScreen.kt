@@ -21,6 +21,7 @@ import pl.careaboutit.ceidgapp.R
 import pl.careaboutit.ceidgapp.ui.components.CustomButton
 import pl.careaboutit.ceidgapp.ui.components.CustomText
 import pl.careaboutit.ceidgapp.ui.components.CustomTextField
+import pl.careaboutit.ceidgapp.utils.isPkdValid
 import pl.careaboutit.ceidgapp.viewmodels.CompanyViewModel
 
 @Composable
@@ -30,6 +31,7 @@ fun SearchByPkdScreen(
 ) {
     var pkdValue by remember { mutableStateOf("") }
     var cityValue by remember { mutableStateOf("") }
+    var isPkdValid by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -45,8 +47,10 @@ fun SearchByPkdScreen(
             value = pkdValue,
             onValueChange = {
                 pkdValue = it
+                isPkdValid = isPkdValid(it)
             },
-            keyboardType = KeyboardType.Text
+            keyboardType = KeyboardType.Text,
+            isError = !isPkdValid && pkdValue.isNotEmpty()
         )
         Spacer(modifier = Modifier.height(15.dp))
         CustomTextField(
@@ -61,8 +65,14 @@ fun SearchByPkdScreen(
         CustomButton(
             text = stringResource(id = R.string.search_btn),
             onClick = {
-                viewModel.searchCompanyByPkd(pkdValue, cityValue)
-                navController.navigate(CeidgScreen.SearchByPkdResult.name)
+                if (isPkdValid) {
+                    viewModel.searchCompanyByPkd(
+                        pkdValue
+                            .replace(".", "")
+                            .replace(" ", ""), cityValue
+                    )
+                    navController.navigate(CeidgScreen.SearchByPkdResult.name)
+                }
             }
         )
     }
