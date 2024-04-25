@@ -3,7 +3,7 @@ package pl.careaboutit.ceidgapp.api.model
 import kotlinx.serialization.Serializable
 
 @Serializable
-class CompanyDataResponse(
+data class CompanyDataResponse(
     val firma: List<CompanyDetails>,
     val properties: Properties
 ) {

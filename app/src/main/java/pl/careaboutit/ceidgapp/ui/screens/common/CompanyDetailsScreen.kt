@@ -98,7 +98,7 @@ fun CompanyItemDetails(company: CompanyDetails) {
             )
             CustomCardText(
                 key = stringResource(id = R.string.company),
-                value = company.nazwa ?: "-"
+                value = company.nazwa
             )
             Spacer(modifier = Modifier.height(10.dp))
 
@@ -134,18 +134,18 @@ fun CompanyItemDetails(company: CompanyDetails) {
                         "miejsc. ${company.adresDzialalnosci?.miasto ?: "-"}, " +
                         "${company.adresDzialalnosci?.ulica ?: "-"}, " +
                         "${company.adresDzialalnosci?.budynek ?: "-"}, " +
-                        "${company.adresDzialalnosci?.kod ?: "-"}"
+                        (company.adresDzialalnosci?.kod ?: "-")
             )
             val addresses =
                 company.adresyDzialalnosciDodatkowe?.joinToString(separator = "\n") { address ->
                     buildString {
-                        append("woj. ${address.wojewodztwo ?: "-"}, ")
-                        append("pow. ${address.powiat ?: "-"}, ")
-                        append("gm. ${address.gmina ?: "-"}, ")
-                        append("miejsc. ${address.miasto ?: "-"}, ")
-                        append("${address.ulica ?: "-"}, ")
-                        append("${address.budynek ?: "-"}, ")
-                        append("${address.kod ?: "-"}")
+                        append("woj. ${address.wojewodztwo}, ")
+                        append("pow. ${address.powiat}, ")
+                        append("gm. ${address.gmina}, ")
+                        append("miejsc. ${address.miasto}, ")
+                        append("${address.ulica}, ")
+                        append("${address.budynek}, ")
+                        append(address.kod)
                     }
                 } ?: "-"
             CustomCardText(
@@ -160,7 +160,7 @@ fun CompanyItemDetails(company: CompanyDetails) {
                         "miejsc. ${company.adresKorespondencyjny?.miasto ?: "-"}, " +
                         "${company.adresKorespondencyjny?.ulica ?: "-"}, " +
                         "${company.adresKorespondencyjny?.budynek ?: "-"}, " +
-                        "${company.adresKorespondencyjny?.kod ?: "-"}"
+                        (company.adresKorespondencyjny?.kod ?: "-")
             )
             CustomCardText(
                 key = stringResource(id = R.string.citenship),
