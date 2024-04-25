@@ -24,7 +24,7 @@ import pl.careaboutit.ceidgapp.R
 import pl.careaboutit.ceidgapp.ui.components.CustomErrorMessage
 import pl.careaboutit.ceidgapp.ui.components.CustomText
 import pl.careaboutit.ceidgapp.ui.screens.common.CompanyItem
-import pl.careaboutit.ceidgapp.viewmodels.CompanyState
+import pl.careaboutit.ceidgapp.viewmodels.CompaniesState
 import pl.careaboutit.ceidgapp.viewmodels.CompanyViewModel
 
 @Composable
@@ -32,7 +32,7 @@ fun SearchByPkdResultScreen(
     navController: NavController,
     viewModel: CompanyViewModel = viewModel()
 ) {
-    val state = viewModel.stateFlow.collectAsState()
+    val state = viewModel.stateCompaniesFlow.collectAsState()
     val companyState = state.value
 
     Column(
@@ -55,12 +55,12 @@ fun SearchByPkdResultScreen(
             }
 
             else -> {
-                if (companyState.companyData.firmy.isNotEmpty()) {
+                if (companyState.companiesData.firmy.isNotEmpty()) {
                     LazyColumn {
                         item {
                             SummaryHeader(companyState)
                         }
-                        itemsIndexed(companyState.companyData.firmy) { index, company ->
+                        itemsIndexed(companyState.companiesData.firmy) { index, company ->
                             key(index) {
                                 CompanyItem(company = company)
                                 Spacer(modifier = Modifier.height(8.dp))
@@ -76,14 +76,14 @@ fun SearchByPkdResultScreen(
 }
 
 @Composable
-private fun SummaryHeader(companyState: CompanyState) {
+private fun SummaryHeader(companiesState: CompaniesState) {
     Spacer(modifier = Modifier.height(15.dp))
     CustomText(text = stringResource(id = R.string.text_result))
     Spacer(modifier = Modifier.height(15.dp))
     Text(
         text = stringResource(
             id = R.string.search_by_pkd_header,
-            companyState.companyData.firmy.size
+            companiesState.companiesData.firmy.size
         )
     )
     Spacer(modifier = Modifier.height(15.dp))

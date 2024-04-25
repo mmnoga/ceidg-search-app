@@ -9,9 +9,16 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import pl.careaboutit.ceidgapp.api.ApiService
 import pl.careaboutit.ceidgapp.api.NetworkModule
+import pl.careaboutit.ceidgapp.api.model.CompaniesDataResponse
 import pl.careaboutit.ceidgapp.api.model.CompanyDataResponse
 import retrofit2.HttpException
 import timber.log.Timber
+
+data class CompaniesState(
+    val companiesData: CompaniesDataResponse,
+    val isLoading: Boolean,
+    val error: String?
+)
 
 data class CompanyState(
     val companyData: CompanyDataResponse,
@@ -20,7 +27,15 @@ data class CompanyState(
 )
 
 class CompanyViewModel : ViewModel() {
-    private val _stateFlow: MutableStateFlow<CompanyState> = MutableStateFlow(
+    private val _stateCompaniesFlow: MutableStateFlow<CompaniesState> = MutableStateFlow(
+        CompaniesState(
+            companiesData = CompaniesDataResponse(),
+            isLoading = true,
+            error = null
+        )
+    )
+
+    private val _stateCompanyFlow: MutableStateFlow<CompanyState> = MutableStateFlow(
         CompanyState(
             companyData = CompanyDataResponse(),
             isLoading = true,
@@ -28,22 +43,34 @@ class CompanyViewModel : ViewModel() {
         )
     )
 
-    val stateFlow: StateFlow<CompanyState>
-        get() = _stateFlow.asStateFlow()
+    val stateCompaniesFlow: StateFlow<CompaniesState>
+        get() = _stateCompaniesFlow.asStateFlow()
+
+    val stateCompanyFlow: StateFlow<CompanyState>
+        get() = _stateCompanyFlow.asStateFlow()
 
     private val apiService: ApiService = NetworkModule().apiService
 
-    fun searchCompanyByNip(nip: String) {
+    fun getCompaniesByNip(nip: String) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val data = apiService.getCompanyData(nip)
-                _stateFlow.value = _stateFlow.value.copy(
-                    companyData = data,
-                    isLoading = false
-                )
+                val response = apiService.getCompanyData(nip)
+                if (response.isSuccessful) {
+                    val data = response.body()
+                    _stateCompaniesFlow.value = _stateCompaniesFlow.value.copy(
+                        companiesData = data ?: CompaniesDataResponse(),
+                        isLoading = false
+                    )
+                } else {
+                    Timber.e("Error: ${response.code()}")
+                    _stateCompaniesFlow.value = _stateCompaniesFlow.value.copy(
+                        isLoading = false,
+                        error = response.code().toString()
+                    )
+                }
             } catch (exception: HttpException) {
                 Timber.e(exception)
-                _stateFlow.value = _stateFlow.value.copy(
+                _stateCompaniesFlow.value = _stateCompaniesFlow.value.copy(
                     isLoading = false,
                     error = exception.code().toString()
                 )
@@ -51,21 +78,58 @@ class CompanyViewModel : ViewModel() {
         }
     }
 
-    fun searchCompanyByPkd(pkd: String, city: String) {
+    fun getCompaniesByPkd(pkd: String, city: String) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val data = apiService.getCompaniesByPkdAndCity(pkd = pkd, city = city)
-                _stateFlow.value = _stateFlow.value.copy(
-                    companyData = data,
-                    isLoading = false
-                )
+                val response = apiService.getCompaniesByPkdAndCity(pkd, city)
+                if (response.isSuccessful) {
+                    val data = response.body()
+                    _stateCompaniesFlow.value = _stateCompaniesFlow.value.copy(
+                        companiesData = data ?: CompaniesDataResponse(),
+                        isLoading = false
+                    )
+                } else {
+                    Timber.e("Error: ${response.code()}")
+                    _stateCompaniesFlow.value = _stateCompaniesFlow.value.copy(
+                        isLoading = false,
+                        error = response.code().toString()
+                    )
+                }
             } catch (exception: HttpException) {
                 Timber.e(exception)
-                _stateFlow.value = _stateFlow.value.copy(
+                _stateCompaniesFlow.value = _stateCompaniesFlow.value.copy(
                     isLoading = false,
                     error = exception.code().toString()
                 )
             }
         }
     }
+
+    fun getCompanyDetails(nip: String? = null, regon: String? = null, ids: List<String>? = null) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val response = apiService.getCompanyDetailsData(nip, regon, ids)
+                if (response.isSuccessful) {
+                    val data = response.body()
+                    _stateCompanyFlow.value = _stateCompanyFlow.value.copy(
+                        companyData = data ?: CompanyDataResponse(),
+                        isLoading = false
+                    )
+                } else {
+                    Timber.e("Error: ${response.errorBody()}")
+                    _stateCompanyFlow.value = _stateCompanyFlow.value.copy(
+                        isLoading = false,
+                        error = response.errorBody().toString()
+                    )
+                }
+            } catch (exception: Exception) {
+                Timber.e(exception)
+                _stateCompanyFlow.value = _stateCompanyFlow.value.copy(
+                    isLoading = false,
+                    error = exception.message
+                )
+            }
+        }
+    }
+
 }

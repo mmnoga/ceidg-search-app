@@ -66,7 +66,7 @@ fun SearchByPkdScreen(
             text = stringResource(id = R.string.search_btn),
             onClick = {
                 if (isPkdValid) {
-                    viewModel.searchCompanyByPkd(
+                    viewModel.getCompaniesByPkd(
                         pkdValue
                             .replace(".", "")
                             .replace(" ", ""), cityValue

@@ -54,7 +54,7 @@ fun SearchByNipScreen(
             text = stringResource(id = R.string.search_btn),
             onClick = {
                 if (isNipValid) {
-                    viewModel.searchCompanyByNip(nipValue)
+                    viewModel.getCompanyDetails(nipValue)
                     navController.navigate(CeidgScreen.SearchByNipResult.name)
                 }
             },

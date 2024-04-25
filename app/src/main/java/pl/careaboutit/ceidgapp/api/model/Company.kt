@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 data class Company(
     val id: String,
     val nazwa: String,
-    val adresDzialalnosci: Address,
+    val adresDzialalnosci: AddressDetails,
     val wlasciciel: Owner,
     val dataRozpoczecia: String,
     val status: String,

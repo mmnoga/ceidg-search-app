@@ -29,6 +29,7 @@ import pl.careaboutit.ceidgapp.ui.screens.SearchByNipResultScreen
 import pl.careaboutit.ceidgapp.ui.screens.SearchByNipScreen
 import pl.careaboutit.ceidgapp.ui.screens.SearchByPkdResultScreen
 import pl.careaboutit.ceidgapp.ui.screens.SearchByPkdScreen
+import pl.careaboutit.ceidgapp.ui.screens.common.CompanyDetailsScreen
 import pl.careaboutit.ceidgapp.viewmodels.CompanyViewModel
 
 enum class CeidgScreen(@StringRes val title: Int) {
@@ -36,7 +37,8 @@ enum class CeidgScreen(@StringRes val title: Int) {
     SearchByNip(title = R.string.search_by_nip),
     SearchByNipResult(title = R.string.text_result),
     SearchByPkd(title = R.string.search_by_pkd),
-    SearchByPkdResult(title = R.string.text_result)
+    SearchByPkdResult(title = R.string.text_result),
+    CompanyDetails(title = R.string.text_details)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -113,6 +115,9 @@ fun CeidgApp(
             }
             composable(route = CeidgScreen.SearchByPkdResult.name) {
                 SearchByPkdResultScreen(navController = navController, viewModel = viewModel)
+            }
+            composable(route = CeidgScreen.CompanyDetails.name) {
+                CompanyDetailsScreen(navController = navController, viewModel = viewModel)
             }
         }
     }

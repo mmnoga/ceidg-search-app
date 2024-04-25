@@ -9,13 +9,31 @@
     <string name="text_search">Kryteria wyszukiwania</string>
     <string name="text_result">Wyniki wyszukiwania</string>
     <string name="text_no_results">Brak wpisów spełniających podane kryteria</string>
+    <string name="text_details">Szczegóły</string>
 
-    <string name="name">Nazwa</string>
+    <string name="title">Nazwa</string>
+    <string name="name">Imię</string>
+    <string name="surname">Nazwisko</string>
     <string name="company">Firma przedsiębiorcy</string>
+    <string name="email">Adres poczty elektronicznej</string>
+    <string name="www">Adres strony internetowej</string>
+    <string name="telephone">Numer telefonu</string>
+    <string name="additional_contact">Inna forma kontaktu</string>
     <string name="enterpreneur">Przedsiębiorca</string>
     <string name="address">Adres</string>
-    <string name="start_data">Data rozpoczęcia działalności</string>
+    <string name="address_principal">Stałe miejsce wykonywania działalności gospodarczej</string>
+    <string name="addresses_additional">Dodatkowe stałe miejsca wykonywania działalności gospodarczej</string>
+    <string name="postal_address">Adres do doreńczeń</string>
+    <string name="citenship">Przedsiębiorca posiada obywatelstwa państw</string>
+    <string name="date_start">Data rozpoczęcia działalności</string>
+    <string name="date_cancel">Data zawieszenia wykonywania indywidualnej działalności</string>
+    <string name="date_resume">Data wznowienia wykonywania indywidualnej działalności</string>
+    <string name="date_stop">Data zaprzestania wykonywania działalności</string>
+    <string name="date_removal">Data wykreślenia wpisu z rejestru</string>
     <string name="status">Status</string>
+    <string name="pkd_major">Przeważająca działalność gospodarcza (kod PKD)</string>
+    <string name="pkd_other_activity">Wykonywana działalność gospodarcza (kody PKD)</string>
+    <string name="conjugal_joint">Małżeńska wspólność majątkowa</string>
 
     <string name="search_btn">Szukaj</string>
     <string name="back_icon_description">Ikona powrotu</string>
@@ -28,4 +46,13 @@
     <string name="search_by_nip">Wyszukiwanie po nr NIP</string>
     <string name="search_by_pkd">Wyszukiwanie po profilu działalności</string>
     <string name="search_by_pkd_header">Znaleziono %1$d pozycji spełniających podane warunki.</string>
+
+    <string name="text_basic_information">Dane podstawowe</string>
+    <string name="text_contact_information">Dane kontaktowe</string>
+    <string name="text_address_details">Dane adresowe</string>
+    <string name="text_additional_information">Dane dodatkowe</string>
+
+    <string name="yes">Tak</string>
+    <string name="no">Nie</string>
+    <string name="not_applicable">Nie dotyczy</string>
 </resources>

@@ -3,7 +3,7 @@ package pl.careaboutit.ceidgapp.api.model
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class Address(
+data class AddressDetails(
     val ulica: String,
     val budynek: String,
     val miasto: String,
@@ -11,5 +11,7 @@ data class Address(
     val powiat: String,
     val gmina: String,
     val kraj: String,
-    val kod: String
+    val kod: String,
+    val terc: String,
+    val simc: String
 )

@@ -3,12 +3,16 @@ package pl.careaboutit.ceidgapp.api.model
 import kotlinx.serialization.Serializable
 
 @Serializable
-class CompanyDataResponse(
-    val firma: List<CompanyDetails>,
+data class CompaniesDataResponse(
+    val firmy: List<Company>,
+    val count: Int,
+    val links: Links,
     val properties: Properties
 ) {
     constructor() : this(
         emptyList(),
+        0,
+        Links("", "", "", "", ""),
         Properties("", "", "", "", "")
     )
 }
