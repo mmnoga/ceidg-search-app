@@ -16,7 +16,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import pl.careaboutit.ceidgapp.CeidgScreen
+import pl.careaboutit.ceidgapp.NavigationScreens
 import pl.careaboutit.ceidgapp.R
 import pl.careaboutit.ceidgapp.ui.components.CustomButton
 import pl.careaboutit.ceidgapp.ui.components.CustomText
@@ -71,7 +71,7 @@ fun SearchByPkdScreen(
                             .replace(".", "")
                             .replace(" ", ""), cityValue
                     )
-                    navController.navigate(CeidgScreen.SearchByPkdResult.name)
+                    navController.navigate(NavigationScreens.SearchByPkdResult.route)
                 }
             }
         )

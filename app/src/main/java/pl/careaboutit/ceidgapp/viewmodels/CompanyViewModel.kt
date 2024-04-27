@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import pl.careaboutit.ceidgapp.api.ApiService
+import pl.careaboutit.ceidgapp.api.ApiCeidgService
 import pl.careaboutit.ceidgapp.api.NetworkModule
 import pl.careaboutit.ceidgapp.api.model.CompaniesDataResponse
 import pl.careaboutit.ceidgapp.api.model.CompanyDataResponse
@@ -49,12 +49,12 @@ class CompanyViewModel : ViewModel() {
     val stateCompanyFlow: StateFlow<CompanyState>
         get() = _stateCompanyFlow.asStateFlow()
 
-    private val apiService: ApiService = NetworkModule().apiService
+    private val apiCeidgService: ApiCeidgService = NetworkModule().apiCeidgService
 
     fun getCompaniesByNip(nip: String) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val response = apiService.getCompanyData(nip)
+                val response = apiCeidgService.getCompanyData(nip)
                 if (response.isSuccessful) {
                     val data = response.body()
                     _stateCompaniesFlow.value = _stateCompaniesFlow.value.copy(
@@ -81,7 +81,7 @@ class CompanyViewModel : ViewModel() {
     fun getCompaniesByPkd(pkd: String, city: String) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val response = apiService.getCompaniesByPkdAndCity(pkd, city)
+                val response = apiCeidgService.getCompaniesByPkdAndCity(pkd, city)
                 if (response.isSuccessful) {
                     val data = response.body()
                     _stateCompaniesFlow.value = _stateCompaniesFlow.value.copy(
@@ -108,7 +108,7 @@ class CompanyViewModel : ViewModel() {
     fun getCompanyDetails(nip: String? = null, regon: String? = null, ids: List<String>? = null) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val response = apiService.getCompanyDetailsData(nip, regon, ids)
+                val response = apiCeidgService.getCompanyDetailsData(nip, regon, ids)
                 if (response.isSuccessful) {
                     val data = response.body()
                     _stateCompanyFlow.value = _stateCompanyFlow.value.copy(
@@ -131,5 +131,4 @@ class CompanyViewModel : ViewModel() {
             }
         }
     }
-
 }

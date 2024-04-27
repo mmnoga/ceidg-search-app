@@ -3,6 +3,7 @@ package pl.careaboutit.ceidgapp.ui.screens.common
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -10,8 +11,14 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.key
@@ -22,21 +29,26 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import pl.careaboutit.ceidgapp.NavigationScreens
 import pl.careaboutit.ceidgapp.R
 import pl.careaboutit.ceidgapp.api.model.CompanyDetails
 import pl.careaboutit.ceidgapp.ui.components.CustomCardHeader
 import pl.careaboutit.ceidgapp.ui.components.CustomCardText
 import pl.careaboutit.ceidgapp.ui.components.CustomText
 import pl.careaboutit.ceidgapp.viewmodels.CompanyViewModel
+import pl.careaboutit.ceidgapp.viewmodels.LocationViewModel
 
 @Composable
 fun CompanyDetailsScreen(
     navController: NavController,
-    viewModel: CompanyViewModel = viewModel()
+    companyViewModel: CompanyViewModel = viewModel(),
+    locationViewModel: LocationViewModel = viewModel()
 ) {
+    val stateCompanyViewModel = companyViewModel.stateCompanyFlow.collectAsState()
+    val companyState = stateCompanyViewModel.value
 
-    val state = viewModel.stateCompanyFlow.collectAsState()
-    val companyState = state.value
+    val stateLocationViewModel = locationViewModel.stateLocationFlow.collectAsState()
+    val locationState = stateLocationViewModel.value
 
     Column(
         modifier = Modifier
@@ -46,15 +58,22 @@ fun CompanyDetailsScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         if (companyState.companyData.firma.isNotEmpty()) {
+            Spacer(modifier = Modifier.height(15.dp))
             LazyColumn(horizontalAlignment = Alignment.CenterHorizontally) {
-                item {
-                    Spacer(modifier = Modifier.height(15.dp))
-                    CustomText(text = stringResource(id = R.string.text_details))
-                    Spacer(modifier = Modifier.height(15.dp))
-                }
                 itemsIndexed(companyState.companyData.firma) { index, company ->
                     key(index) {
-                        CompanyItemDetails(company = company)
+                        CompanyItemDetails(
+                            company = company
+                        ) {
+                            val address = "${company.adresDzialalnosci?.kod} " +
+                                    "${company.adresDzialalnosci?.miasto} " +
+                                    "${company.adresDzialalnosci?.ulica} " +
+                                    "${company.adresDzialalnosci?.budynek}"
+
+                            val routeWithAddress =
+                                "${NavigationScreens.CompanyLocation.route}/$address"
+                            navController.navigate(routeWithAddress)
+                        }
                     }
                 }
             }
@@ -65,7 +84,10 @@ fun CompanyDetailsScreen(
 }
 
 @Composable
-fun CompanyItemDetails(company: CompanyDetails) {
+fun CompanyItemDetails(
+    company: CompanyDetails,
+    onClickMap: () -> Unit
+) {
     OutlinedCard(
         elevation = CardDefaults.cardElevation(
             defaultElevation = 6.dp
@@ -122,10 +144,28 @@ fun CompanyItemDetails(company: CompanyDetails) {
                 value = company.innaFormaKonaktu ?: "-"
             )
             Spacer(modifier = Modifier.height(10.dp))
-
-            CustomCardHeader(
-                text = stringResource(id = R.string.text_address_details)
-            )
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(
+                    text = stringResource(id = R.string.text_address_details).uppercase(),
+                    style = MaterialTheme.typography.titleLarge,
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(end = 8.dp)
+                )
+                IconButton(
+                    onClick = onClickMap,
+                    modifier = Modifier.align(Alignment.CenterVertically)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.LocationOn,
+                        contentDescription = null,
+                        tint = Color.Black
+                    )
+                }
+            }
             CustomCardText(
                 key = stringResource(id = R.string.address_principal),
                 value = "woj. ${company.adresDzialalnosci?.wojewodztwo ?: "-"}, " +

@@ -1,6 +1,7 @@
 package pl.careaboutit.ceidgapp
 
 import androidx.annotation.StringRes
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -24,52 +25,108 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import pl.careaboutit.ceidgapp.ui.screens.CompanyLocationScreen
 import pl.careaboutit.ceidgapp.ui.screens.HomeMenuScreen
 import pl.careaboutit.ceidgapp.ui.screens.SearchByNipResultScreen
 import pl.careaboutit.ceidgapp.ui.screens.SearchByNipScreen
 import pl.careaboutit.ceidgapp.ui.screens.SearchByPkdResultScreen
 import pl.careaboutit.ceidgapp.ui.screens.SearchByPkdScreen
+
 import pl.careaboutit.ceidgapp.ui.screens.common.CompanyDetailsScreen
 import pl.careaboutit.ceidgapp.viewmodels.CompanyViewModel
+import pl.careaboutit.ceidgapp.viewmodels.LocationViewModel
 
-enum class CeidgScreen(@StringRes val title: Int) {
-    HomeMenu(title = R.string.app_name),
-    SearchByNip(title = R.string.search_by_nip),
-    SearchByNipResult(title = R.string.text_result),
-    SearchByPkd(title = R.string.search_by_pkd),
-    SearchByPkdResult(title = R.string.text_result),
-    CompanyDetails(title = R.string.text_details)
+sealed class NavigationScreens(
+    val route: String,
+    @StringRes val resourceId: Int
+) {
+    object Home :
+        NavigationScreens("Home", R.string.app_name)
+
+    object SearchByNip :
+        NavigationScreens("SearchByNip", R.string.search_by_nip)
+
+    object SearchByNipResult :
+        NavigationScreens("SearchByNipResult", R.string.search_result)
+
+    object CompanyDetails :
+        NavigationScreens("CompanyDetails", R.string.company_details)
+
+    object CompanyLocation :
+        NavigationScreens("CompanyLocation", R.string.company_location)
+
+    object SearchByPkd :
+        NavigationScreens("SearchByPkd", R.string.search_by_pkd)
+
+    object SearchByPkdResult :
+        NavigationScreens("SearchByPkdResult", R.string.search_result)
+
+    companion object {
+        val allScreens: List<NavigationScreens>
+            get() = listOf(Home, SearchByNip, SearchByNipResult, CompanyDetails, CompanyLocation)
+    }
+}
+
+@Composable
+private fun MainScreenNavigation(
+    navController: NavHostController,
+    companyViewModel: CompanyViewModel,
+    locationViewModel: LocationViewModel
+) {
+    NavHost(navController, startDestination = NavigationScreens.Home.route) {
+        composable(NavigationScreens.Home.route) {
+            HomeMenuScreen(navController)
+        }
+        composable(NavigationScreens.SearchByNip.route) {
+            SearchByNipScreen(navController, companyViewModel)
+        }
+        composable(NavigationScreens.SearchByNipResult.route) {
+            SearchByNipResultScreen(navController, companyViewModel)
+        }
+        composable(route = NavigationScreens.CompanyDetails.route) {
+            CompanyDetailsScreen(navController = navController, companyViewModel, locationViewModel)
+        }
+        composable(route = "${NavigationScreens.CompanyLocation.route}/{address}") { backStackEntry ->
+            val address = backStackEntry.arguments?.getString("address")
+            CompanyLocationScreen(locationViewModel = locationViewModel, address = address)
+        }
+        composable(route = NavigationScreens.SearchByPkd.route) {
+            SearchByPkdScreen(navController = navController, viewModel = companyViewModel)
+        }
+        composable(route = NavigationScreens.SearchByPkdResult.route) {
+            SearchByPkdResultScreen(navController = navController, viewModel = companyViewModel)
+        }
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CeidgAppBar(
-    currentScreen: CeidgScreen,
-    canNavigateBack: Boolean,
-    navigateUp: () -> Unit,
-    modifier: Modifier = Modifier
+    navController: NavHostController,
+    currentRoute: String?,
+    titleResourceId: Int?,
+    navigateUpEnabled: Boolean = currentRoute != NavigationScreens.Home.route
 ) {
+    val title =
+        titleResourceId?.let { stringResource(it) } ?: stringResource(id = R.string.app_name)
+
     TopAppBar(
-        title = { Text(stringResource(currentScreen.title)) },
+        title = { Text(text = title) },
         colors = TopAppBarDefaults.mediumTopAppBarColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer
         ),
-        modifier = modifier,
         navigationIcon = {
-            if (canNavigateBack) {
-                IconButton(onClick = navigateUp) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Default.ArrowBack,
-                        contentDescription = stringResource(R.string.back_icon_description)
-                    )
+            IconButton(
+                onClick = {
+                    if (navigateUpEnabled) {
+                        navController.popBackStack()
+                    }
                 }
-            } else {
-                IconButton(onClick = { }) {
-                    Icon(
-                        imageVector = Icons.Filled.Home,
-                        contentDescription = stringResource(R.string.home_icon_description)
-                    )
-                }
+            ) {
+                Icon(
+                    imageVector = if (navigateUpEnabled) Icons.AutoMirrored.Filled.ArrowBack else Icons.Default.Home,
+                    contentDescription = null
+                )
             }
         }
     )
@@ -77,48 +134,43 @@ fun CeidgAppBar(
 
 @Composable
 fun CeidgApp(
-    viewModel: CompanyViewModel = viewModel(),
+    companyViewModel: CompanyViewModel = viewModel(),
+    locationViewModel: LocationViewModel = viewModel(),
     navController: NavHostController = rememberNavController()
 ) {
-    val backStackEntry by navController.currentBackStackEntryAsState()
-    val currentScreen = CeidgScreen.valueOf(
-        backStackEntry?.destination?.route ?: CeidgScreen.HomeMenu.name
-    )
+    val currentRoute = currentRoute(navController)
+    val currentScreen = NavigationScreens.allScreens.find { it.route == currentRoute }
+
+    val titleResourceId = currentScreen?.resourceId
 
     Scaffold(
         topBar = {
+            val navigateUpEnabled = currentRoute != NavigationScreens.Home.route
             CeidgAppBar(
-                currentScreen = currentScreen,
-                canNavigateBack = navController.previousBackStackEntry != null,
-                navigateUp = { navController.navigateUp() }
+                navController = navController,
+                currentRoute = currentRoute,
+                titleResourceId = titleResourceId,
+                navigateUpEnabled = navigateUpEnabled
             )
         }
     ) { innerPadding ->
-        NavHost(
-            navController = navController,
-            startDestination = CeidgScreen.HomeMenu.name,
+        Box(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
-            composable(route = CeidgScreen.HomeMenu.name) {
-                HomeMenuScreen(navController = navController)
-            }
-            composable(route = CeidgScreen.SearchByNip.name) {
-                SearchByNipScreen(navController = navController, viewModel = viewModel)
-            }
-            composable(route = CeidgScreen.SearchByNipResult.name) {
-                SearchByNipResultScreen(navController = navController, viewModel = viewModel)
-            }
-            composable(route = CeidgScreen.SearchByPkd.name) {
-                SearchByPkdScreen(navController = navController, viewModel = viewModel)
-            }
-            composable(route = CeidgScreen.SearchByPkdResult.name) {
-                SearchByPkdResultScreen(navController = navController, viewModel = viewModel)
-            }
-            composable(route = CeidgScreen.CompanyDetails.name) {
-                CompanyDetailsScreen(navController = navController, viewModel = viewModel)
-            }
+            MainScreenNavigation(
+                navController = navController,
+                companyViewModel = companyViewModel,
+                locationViewModel = locationViewModel
+            )
         }
     }
+}
+
+@Composable
+private fun currentRoute(navController: NavHostController): String? {
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
+    return currentRoute?.substringBefore("/") ?: currentRoute
 }

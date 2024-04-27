@@ -1,37 +1,35 @@
 package pl.careaboutit.ceidgapp.ui.screens
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.key
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import pl.careaboutit.ceidgapp.CeidgScreen
+import pl.careaboutit.ceidgapp.NavigationScreens
 import pl.careaboutit.ceidgapp.R
 import pl.careaboutit.ceidgapp.api.model.CompanyDetails
 import pl.careaboutit.ceidgapp.ui.components.CustomErrorMessage
@@ -67,22 +65,10 @@ fun SearchByNipResultScreen(
 
             else -> {
                 if (companyState.companyData.firma.isNotEmpty()) {
-                    LazyColumn(horizontalAlignment = Alignment.CenterHorizontally) {
-                        item() {
-                            Spacer(modifier = Modifier.height(15.dp))
-                            CustomText(text = stringResource(id = R.string.text_result))
-                            Spacer(modifier = Modifier.height(15.dp))
-                        }
-                        itemsIndexed(companyState.companyData.firma) { index, company ->
-                            key(index) {
-                                CompanyItemDetails(company = company) {
-                                    navController.navigate(
-                                        CeidgScreen.CompanyDetails.name
-                                    )
-                                }
-                                Spacer(modifier = Modifier.height(8.dp))
-                            }
-                        }
+                    CompanyItemDetails(company = companyState.companyData.firma[0]) {
+                        navController.navigate(
+                            NavigationScreens.CompanyDetails.route
+                        )
                     }
                 } else {
                     CustomText(text = stringResource(id = R.string.text_no_results))
@@ -98,49 +84,111 @@ private fun CompanyItemDetails(
     onClickInfo: () -> Unit
 ) {
     OutlinedCard(
+        modifier = Modifier.clickable {
+            onClickInfo()
+        },
+        shape = MaterialTheme.shapes.medium,
         elevation = CardDefaults.cardElevation(
             defaultElevation = 6.dp
         ),
         border = BorderStroke(1.dp, Color.Black),
     ) {
-        Column(
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(15.dp)
+                .background(Color.LightGray)
+                .padding(vertical = 8.dp)
         ) {
             Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = company.nazwa,
-                    fontWeight = FontWeight.Bold,
                     modifier = Modifier
                         .weight(1f)
-                        .padding(end = 8.dp)
+                        .padding(end = 5.dp),
+                    text = company.nazwa,
+                    style = MaterialTheme.typography.titleMedium
                 )
-                IconButton(
-                    onClick = onClickInfo,
-                    modifier = Modifier.align(Alignment.CenterVertically)
+                Icon(
+                    imageVector = Icons.Default.Info,
+                    contentDescription = null,
+                    tint = Color.Black
+                )
+            }
+        }
+
+        HorizontalDivider(color = Color.Black)
+
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+        ) {
+            Column {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.Info,
-                        contentDescription = null,
-                        tint = Color.Black
+                    Text(
+                        modifier = Modifier.weight(4f),
+                        text = stringResource(id = R.string.enterpreneur),
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                    Text(
+                        modifier = Modifier.weight(6f),
+                        text = "${company.wlasciciel?.imie ?: "-"} ${company.wlasciciel?.nazwisko ?: "-"}",
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                }
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        modifier = Modifier.weight(4f),
+                        text = stringResource(id = R.string.nip),
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                    Text(
+                        modifier = Modifier.weight(6f),
+                        text = company.wlasciciel?.nip ?: "-",
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                }
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        modifier = Modifier.weight(4f),
+                        text = stringResource(id = R.string.regon),
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                    Text(
+                        modifier = Modifier.weight(6f),
+                        text = company.wlasciciel?.regon ?: "-",
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                }
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        modifier = Modifier.weight(4f),
+                        text = stringResource(id = R.string.city),
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                    Text(
+                        modifier = Modifier.weight(6f),
+                        text = company.adresDzialalnosci?.miasto ?: "-",
+                        style = MaterialTheme.typography.bodyMedium
                     )
                 }
             }
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(text = stringResource(id = R.string.enterpreneur), fontWeight = FontWeight.Bold)
-            Text(text = "${company.wlasciciel?.imie ?: "-"} ${company.wlasciciel?.nazwisko ?: "-"}")
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(text = stringResource(id = R.string.nip), fontWeight = FontWeight.Bold)
-            Text(text = company.wlasciciel?.nip ?: "-")
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(text = stringResource(id = R.string.regon), fontWeight = FontWeight.Bold)
-            Text(text = company.wlasciciel?.regon ?: "-")
-            Text(text = stringResource(id = R.string.city), fontWeight = FontWeight.Bold)
-            Text(text = company.adresDzialalnosci?.miasto ?: "-")
         }
     }
 }

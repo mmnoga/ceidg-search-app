@@ -13,7 +13,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import pl.careaboutit.ceidgapp.CeidgScreen
+import pl.careaboutit.ceidgapp.NavigationScreens
 import pl.careaboutit.ceidgapp.R
 import pl.careaboutit.ceidgapp.ui.components.CustomMainButton
 
@@ -32,11 +32,11 @@ fun HomeMenuScreen(navController: NavController) {
         CustomMainButton(
             painterResource(id = R.drawable.company1),
             text = stringResource(id = R.string.main_btn_nip_search)
-        ) { navController.navigate(CeidgScreen.SearchByNip.name) }
+        ) { navController.navigate(NavigationScreens.SearchByNip.route) }
         Spacer(modifier = Modifier.height(15.dp))
         CustomMainButton(
             painterResource(id = R.drawable.company2),
             text = stringResource(id = R.string.main_btn_pkd_search)
-        ) { navController.navigate(CeidgScreen.SearchByPkd.name) }
+        ) { navController.navigate(NavigationScreens.SearchByPkd.route) }
     }
 }

@@ -1,5 +1,12 @@
 <resources>
     <string name="app_name">CEiDG Przeglądanie Wpisów</string>
+    
+    #routes
+    <string name="home_route">Home</string>
+    <string name="search_by_nip_screen">Wyszukiwanie po nr NIP</string>
+    <string name="search_result">Wyniki wyszukiwania</string>
+    <string name="company_details">Szczegóły</string>
+    <string name="company_location">Lokalizacja</string>
 
     <string name="nip">NIP</string>
     <string name="regon">REGON</string>
@@ -55,4 +62,6 @@
     <string name="yes">Tak</string>
     <string name="no">Nie</string>
     <string name="not_applicable">Nie dotyczy</string>
+    <string name="localization">Lokalizacja</string>
+    <string name="back">Wróć</string>
 </resources>

@@ -15,7 +15,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import pl.careaboutit.ceidgapp.CeidgScreen
+import pl.careaboutit.ceidgapp.NavigationScreens
 import pl.careaboutit.ceidgapp.R
 import pl.careaboutit.ceidgapp.ui.components.CustomButton
 import pl.careaboutit.ceidgapp.ui.components.CustomText
@@ -55,7 +55,7 @@ fun SearchByNipScreen(
             onClick = {
                 if (isNipValid) {
                     viewModel.getCompanyDetails(nipValue)
-                    navController.navigate(CeidgScreen.SearchByNipResult.name)
+                    navController.navigate(NavigationScreens.SearchByNipResult.route)
                 }
             },
             enabled = isNipValid && nipValue.isNotEmpty()
