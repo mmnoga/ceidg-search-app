@@ -5,8 +5,10 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -28,17 +30,20 @@ fun CustomMainButton(painter: Painter, text: String, onClickAction: () -> Unit) 
             .background(Color.LightGray)
             .border(
                 border = BorderStroke(1.dp, Color.Black),
-                shape = RoundedCornerShape(10.dp))
+                shape = RoundedCornerShape(10.dp)
+            )
     ) {
         Row(
+            modifier = Modifier.padding(15.dp),
+            horizontalArrangement = Arrangement.spacedBy(15.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Image(
                 painter = painter,
                 contentDescription = null,
                 modifier = Modifier
-                    .height(120.dp)
-                    .padding(15.dp),
+                    .height(100.dp)
+                    .fillMaxWidth(0.3f)
             )
             Text(text = text)
         }

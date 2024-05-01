@@ -38,5 +38,10 @@ fun HomeMenuScreen(navController: NavController) {
             painterResource(id = R.drawable.company2),
             text = stringResource(id = R.string.main_btn_pkd_search)
         ) { navController.navigate(NavigationScreens.SearchByPkd.route) }
+        Spacer(modifier = Modifier.height(15.dp))
+        CustomMainButton(
+            painterResource(id = R.drawable.company3),
+            text = stringResource(id = R.string.main_btn_advance_search)
+        ) { navController.navigate(NavigationScreens.AdvancedSearch.route) }
     }
 }

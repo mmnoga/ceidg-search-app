@@ -48,7 +48,7 @@
     <string name="search_icon_description">Ikona wyszukiwania</string>
 
     <string name="main_btn_nip_search">Wyszukaj po numerze NIP</string>
-    <string name="main_btn_pkd_search">Wyszukaj po rodzaju działalności w danej miejscowości</string>
+    <string name="main_btn_pkd_search">Wyszukaj po profilu działalności PKD</string>
 
     <string name="search_by_nip">Wyszukiwanie po nr NIP</string>
     <string name="search_by_pkd">Wyszukiwanie po profilu działalności</string>
@@ -64,4 +64,19 @@
     <string name="not_applicable">Nie dotyczy</string>
     <string name="localization">Lokalizacja</string>
     <string name="back">Wróć</string>
+    <string name="firm_name">Nazwa firmy</string>
+    <string name="include_archived">Uwzględnij wykreślone</string>
+    <string name="include_requiring_verification">Uwzględnij wymagające weryfikacji</string>
+    <string name="address_type">Typ adresu</string>
+    <string name="poviat">Powiat</string>
+    <string name="commune">Gmina</string>
+    <string name="street">Ulica</string>
+    <string name="voivodeship">Województwo</string>
+    <string name="building_number">Numer</string>
+    <string name="door_number">Lokal</string>
+    <string name="main_btn_advance_search">Wyszukiwanie zaawansowane</string>
+    <string name="advanced_search">Wyszukiwanie zaawansowane</string>
+    <string name="main_business_place">Adres głównego miejsca prowadzenia działalności</string>
+    <string name="delivery_address">Adres do doręczeń</string>
+    <string name="additional_business_place">Adres dodatkowego miejsca prowadzenia działalności</string>
 </resources>

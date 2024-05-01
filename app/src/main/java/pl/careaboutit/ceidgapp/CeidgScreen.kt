@@ -25,6 +25,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import pl.careaboutit.ceidgapp.ui.screens.AdvancedSearchScreen
 import pl.careaboutit.ceidgapp.ui.screens.CompanyLocationScreen
 import pl.careaboutit.ceidgapp.ui.screens.HomeMenuScreen
 import pl.careaboutit.ceidgapp.ui.screens.SearchByNipResultScreen
@@ -61,9 +62,15 @@ sealed class NavigationScreens(
     object SearchByPkdResult :
         NavigationScreens("SearchByPkdResult", R.string.search_result)
 
+    object AdvancedSearch :
+        NavigationScreens("AdvancedSearch", R.string.advanced_search)
+
     companion object {
         val allScreens: List<NavigationScreens>
-            get() = listOf(Home, SearchByNip, SearchByNipResult, CompanyDetails, CompanyLocation)
+            get() = listOf(
+                Home, SearchByNip, SearchByNipResult, CompanyDetails, CompanyLocation,
+                SearchByPkd, SearchByPkdResult, AdvancedSearch
+            )
     }
 }
 
@@ -95,6 +102,9 @@ private fun MainScreenNavigation(
         }
         composable(route = NavigationScreens.SearchByPkdResult.route) {
             SearchByPkdResultScreen(navController = navController, viewModel = companyViewModel)
+        }
+        composable(route = NavigationScreens.AdvancedSearch.route) {
+            AdvancedSearchScreen()
         }
     }
 }
