@@ -15,10 +15,10 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import pl.careaboutit.ceidgapp.R
+import pl.careaboutit.ceidgapp.ui.navigation.NavigationScreen
 import pl.careaboutit.ceidgapp.ui.screens.components.CustomButton
 import pl.careaboutit.ceidgapp.ui.screens.components.CustomText
 import pl.careaboutit.ceidgapp.ui.screens.components.CustomTextField
-import pl.careaboutit.ceidgapp.ui.navigation.NavigationScreen
 import pl.careaboutit.ceidgapp.ui.viewmodel.SearchFormByNipViewModel
 import pl.careaboutit.ceidgapp.utils.buildQueryParamsFromObject
 
@@ -28,6 +28,8 @@ fun SearchFormByNipScreen(
     viewModel: SearchFormByNipViewModel = viewModel()
 ) {
     val searchState = viewModel.searchByNipState.value
+
+    val isNipValid = viewModel.isNipValid()
 
     Column(
         modifier = Modifier
@@ -43,10 +45,11 @@ fun SearchFormByNipScreen(
         CustomTextField(
             label = stringResource(id = R.string.nip),
             value = searchState.nip,
-            onValueChange = { viewModel.updateNip(it)
+            onValueChange = {
+                viewModel.updateNip(it)
             },
             keyboardType = KeyboardType.Number,
-            // isError = !isNipValid && nipValue.isNotEmpty()
+            isError = !isNipValid && searchState.nip.isNotEmpty()
         )
         Spacer(modifier = Modifier.height(15.dp))
         CustomButton(
@@ -55,6 +58,7 @@ fun SearchFormByNipScreen(
                 val queryParams = buildQueryParamsFromObject(searchState)
                 navController.navigate("${NavigationScreen.ListResult.route}/$queryParams")
             },
+            enabled = isNipValid
         )
     }
 

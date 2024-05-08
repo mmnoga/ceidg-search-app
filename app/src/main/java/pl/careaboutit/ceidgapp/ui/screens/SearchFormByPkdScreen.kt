@@ -29,6 +29,8 @@ fun SearchFormByPkdScreen(
 ) {
     val searchState = viewModel.searchByPkdState.value
 
+    val isPkdValid = viewModel.isPkdValid()
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -46,8 +48,7 @@ fun SearchFormByPkdScreen(
             onValueChange = {
                 viewModel.updateMiasto(it)
             },
-            keyboardType = KeyboardType.Text,
-            // isError = !isNipValid && nipValue.isNotEmpty()
+            keyboardType = KeyboardType.Text
         )
         Spacer(modifier = Modifier.height(15.dp))
         CustomTextField(
@@ -57,7 +58,7 @@ fun SearchFormByPkdScreen(
                 viewModel.updatePkd(it)
             },
             keyboardType = KeyboardType.Text,
-            // isError = !isNipValid && nipValue.isNotEmpty()
+            isError = !isPkdValid && searchState.pkd.isNotEmpty()
         )
         Spacer(modifier = Modifier.height(15.dp))
         CustomButton(
@@ -66,6 +67,7 @@ fun SearchFormByPkdScreen(
                 val queryParams = buildQueryParamsFromObject(searchState)
                 navController.navigate("${NavigationScreen.ListResult.route}/$queryParams")
             },
+            enabled = isPkdValid
         )
     }
 
