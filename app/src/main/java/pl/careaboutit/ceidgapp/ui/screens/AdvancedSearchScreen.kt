@@ -73,6 +73,10 @@ fun AdvancedSearchScreen(
 
     val date = remember { mutableStateOf(LocalDate.now().minusYears(100)) }
 
+    LaunchedEffect(date) {
+        viewModel.updateDataod(date.toString())
+    }
+
     Column(
         modifier = Modifier
             .fillMaxWidth()

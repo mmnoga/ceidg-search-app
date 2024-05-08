@@ -22,7 +22,6 @@ data class AdvancedSearchState(
     val kod: String? = null,
     val pkd: String? = null,
     val dataod: String? = null,
-    val datado: String? = null,
     val status: List<Status> = emptyList()
 )
 
@@ -90,10 +89,6 @@ class AdvancedSearchViewModel : ViewModel() {
 
     fun updateDataod(newDataod: String?) {
         _advancedSearchState.value = _advancedSearchState.value.copy(dataod = newDataod)
-    }
-
-    fun updateDatado(newDatado: String?) {
-        _advancedSearchState.value = _advancedSearchState.value.copy(datado = newDatado)
     }
 
     fun updateStatus(newStatus: List<Status>) {
