@@ -28,10 +28,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import pl.careaboutit.ceidgapp.R
 import pl.careaboutit.ceidgapp.utils.Voivodeship
-import pl.careaboutit.ceidgapp.ui.components.CustomButton
-import pl.careaboutit.ceidgapp.ui.components.CustomDropdownMenu
-import pl.careaboutit.ceidgapp.ui.components.CustomText
-import pl.careaboutit.ceidgapp.ui.components.CustomTextField
+import pl.careaboutit.ceidgapp.ui.screens.components.CustomButton
+import pl.careaboutit.ceidgapp.ui.screens.components.CustomDropdownMenu
+import pl.careaboutit.ceidgapp.ui.screens.components.CustomText
+import pl.careaboutit.ceidgapp.ui.screens.components.CustomTextField
 
 @Composable
 fun AdvancedSearchScreen() {

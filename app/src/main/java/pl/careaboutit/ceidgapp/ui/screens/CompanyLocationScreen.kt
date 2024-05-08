@@ -1,12 +1,15 @@
 package pl.careaboutit.ceidgapp.ui.screens
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -18,19 +21,53 @@ import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
-import pl.careaboutit.ceidgapp.ui.components.CustomErrorMessage
-import pl.careaboutit.ceidgapp.viewmodels.LocationViewModel
+import pl.careaboutit.ceidgapp.ui.screens.components.CustomErrorMessage
+import pl.careaboutit.ceidgapp.ui.viewmodel.CompanyDetailsViewModel
+import pl.careaboutit.ceidgapp.ui.viewmodel.LocationViewModel
 
 @Composable
 fun CompanyLocationScreen(
-    address: String?,
-    locationViewModel: LocationViewModel = viewModel()
+    companyId: String,
+    locationViewModel: LocationViewModel = viewModel(),
+    companyDetailsViewModel: CompanyDetailsViewModel = viewModel()
 ) {
     val stateLocationViewModel = locationViewModel.stateLocationFlow.collectAsState()
     val locationState = stateLocationViewModel.value
+    val stateCompanyDetailsViewModel = companyDetailsViewModel.stateFlow.collectAsState()
+    val companyDetailsState = stateCompanyDetailsViewModel.value
 
-    if (address != null) {
-        locationViewModel.getCoordinatesFromAddress(address)
+    LaunchedEffect(key1 = companyId) {
+        companyDetailsViewModel.getCompanyDataById(companyId)
+    }
+
+    when {
+        companyDetailsState.isLoading -> {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator()
+            }
+        }
+
+        companyDetailsState.error != null -> {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(text = "Error: ${companyDetailsState.error}")
+            }
+        }
+
+        else -> {
+            val company = companyDetailsState.companyList[0]
+
+            val address = "${company.adresDzialalnosci.kod} " +
+                    "${company.adresDzialalnosci.miasto} " +
+                    "${company.adresDzialalnosci.ulica} " +
+                    "${company.adresDzialalnosci.budynek}"
+            locationViewModel.getCoordinatesFromAddress(address)
+        }
     }
 
     Column(

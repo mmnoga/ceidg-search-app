@@ -13,9 +13,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import pl.careaboutit.ceidgapp.NavigationScreens
+import pl.careaboutit.ceidgapp.ui.navigation.NavigationScreen
 import pl.careaboutit.ceidgapp.R
-import pl.careaboutit.ceidgapp.ui.components.CustomMainButton
+import pl.careaboutit.ceidgapp.ui.screens.components.CustomMainButton
 
 @Composable
 fun HomeMenuScreen(navController: NavController) {
@@ -32,16 +32,16 @@ fun HomeMenuScreen(navController: NavController) {
         CustomMainButton(
             painterResource(id = R.drawable.company1),
             text = stringResource(id = R.string.main_btn_nip_search)
-        ) { navController.navigate(NavigationScreens.SearchByNip.route) }
+        ) { navController.navigate(NavigationScreen.SearchByNip.route) }
         Spacer(modifier = Modifier.height(15.dp))
         CustomMainButton(
             painterResource(id = R.drawable.company2),
             text = stringResource(id = R.string.main_btn_pkd_search)
-        ) { navController.navigate(NavigationScreens.SearchByPkd.route) }
+        ) { navController.navigate(NavigationScreen.SearchByPkd.route) }
         Spacer(modifier = Modifier.height(15.dp))
         CustomMainButton(
             painterResource(id = R.drawable.company3),
             text = stringResource(id = R.string.main_btn_advance_search)
-        ) { navController.navigate(NavigationScreens.AdvancedSearch.route) }
+        ) { navController.navigate(NavigationScreen.AdvancedSearch.route) }
     }
 }
