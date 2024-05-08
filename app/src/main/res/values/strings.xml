@@ -79,4 +79,8 @@
     <string name="main_business_place">Adres głównego miejsca prowadzenia działalności</string>
     <string name="delivery_address">Adres do doręczeń</string>
     <string name="additional_business_place">Adres dodatkowego miejsca prowadzenia działalności</string>
+    <string name="postal_code">Kod pocztowy</string>
+    <string name="choose">Wybierz</string>
+    <string name="cancel">Anuluj</string>
+    <string name="include_active">Uwzględnij aktywne</string>
 </resources>

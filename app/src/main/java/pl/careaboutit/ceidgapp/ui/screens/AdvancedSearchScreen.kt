@@ -1,5 +1,7 @@
 package pl.careaboutit.ceidgapp.ui.screens
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -17,37 +19,59 @@ import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
 import pl.careaboutit.ceidgapp.R
-import pl.careaboutit.ceidgapp.utils.Voivodeship
+import pl.careaboutit.ceidgapp.ui.navigation.NavigationScreen
 import pl.careaboutit.ceidgapp.ui.screens.components.CustomButton
+import pl.careaboutit.ceidgapp.ui.screens.components.CustomDatePicker
 import pl.careaboutit.ceidgapp.ui.screens.components.CustomDropdownMenu
 import pl.careaboutit.ceidgapp.ui.screens.components.CustomText
 import pl.careaboutit.ceidgapp.ui.screens.components.CustomTextField
+import pl.careaboutit.ceidgapp.ui.viewmodel.AdvancedSearchViewModel
+import pl.careaboutit.ceidgapp.utils.Status
+import pl.careaboutit.ceidgapp.utils.Voivodeship
+import pl.careaboutit.ceidgapp.utils.buildQueryParamsFromObject
+import java.time.LocalDate
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun AdvancedSearchScreen() {
-    var firmName by rememberSaveable { mutableStateOf("") }
-    var name by rememberSaveable { mutableStateOf("") }
-    var surname by rememberSaveable { mutableStateOf("") }
-    var poviat by rememberSaveable { mutableStateOf("") }
-    var commune by rememberSaveable { mutableStateOf("") }
-    var city by rememberSaveable { mutableStateOf("") }
-    var street by rememberSaveable { mutableStateOf("") }
-    var buildingNumber by rememberSaveable { mutableStateOf("") }
-    var doorNumber by rememberSaveable { mutableStateOf("") }
+fun AdvancedSearchScreen(
+    navController: NavHostController,
+    viewModel: AdvancedSearchViewModel = viewModel()
+) {
+    val state = viewModel.advancedSearchState.value
+
+    var includeActive by rememberSaveable { mutableStateOf(true) }
     var includeArchived by rememberSaveable { mutableStateOf(false) }
     var includeRequiringVerification by rememberSaveable { mutableStateOf(false) }
-    var address by rememberSaveable { mutableStateOf(AddressType.MAIN_BUSINESS_PLACE) }
-    var voivodeship by rememberSaveable { mutableStateOf(Voivodeship.MALOPOLSKIE) }
+
+    var statusList by remember { mutableStateOf<List<Status>>(emptyList()) }
+    DisposableEffect(includeActive, includeArchived, includeRequiringVerification) {
+        statusList = mutableListOf<Status>().apply {
+            if (includeActive) add(Status.AKTYWNY)
+            if (includeArchived) add(Status.WYKRESLONY)
+            if (includeRequiringVerification) add(Status.OCZEKUJE_NA_ROZPOCZECIE_DZIALANOSCI)
+        }
+        onDispose { }
+    }
+
+    LaunchedEffect(statusList) {
+        viewModel.updateStatus(statusList)
+    }
+
+    val date = remember { mutableStateOf(LocalDate.now().minusYears(100)) }
 
     Column(
         modifier = Modifier
@@ -62,11 +86,49 @@ fun AdvancedSearchScreen() {
 
         Spacer(modifier = Modifier.width(4.dp))
 
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+
+                Column(
+                    modifier = Modifier.weight(1f),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    CustomTextField(
+                        label = stringResource(id = R.string.nip),
+                        value = state.nip ?: "",
+                        onValueChange = {
+                            viewModel.updateNip(it)
+                        }
+                    )
+                }
+
+                Column(
+                    modifier = Modifier.weight(1f),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    CustomTextField(
+                        label = stringResource(id = R.string.regon),
+                        value = state.regon ?: "",
+                        onValueChange = {
+                            viewModel.updateRegon(it)
+                        }
+                    )
+                }
+            }
+        }
+
+        Spacer(modifier = Modifier.width(4.dp))
+
         CustomTextField(
             label = stringResource(id = R.string.firm_name),
-            value = firmName,
+            value = state.nazwa ?: "",
             onValueChange = {
-                firmName = it
+                viewModel.updateNazwa(it)
             }
         )
 
@@ -86,9 +148,9 @@ fun AdvancedSearchScreen() {
                 ) {
                     CustomTextField(
                         label = stringResource(id = R.string.name),
-                        value = name,
+                        value = state.imie ?: "",
                         onValueChange = {
-                            name = it
+                            viewModel.updateImie(it)
                         }
                     )
                 }
@@ -99,14 +161,35 @@ fun AdvancedSearchScreen() {
                 ) {
                     CustomTextField(
                         label = stringResource(id = R.string.surname),
-                        value = surname,
+                        value = state.nazwisko ?: "",
                         onValueChange = {
-                            surname = it
+                            viewModel.updateNazwisko(it)
                         }
                     )
                 }
             }
         }
+
+        Spacer(modifier = Modifier.width(4.dp))
+
+        FilterChip(
+            onClick = { includeActive = !includeActive },
+            label = {
+                Text(stringResource(id = R.string.include_active))
+            },
+            selected = includeActive,
+            leadingIcon = if (includeActive) {
+                {
+                    Icon(
+                        imageVector = Icons.Filled.Done,
+                        contentDescription = "Done icon",
+                        modifier = Modifier.size(FilterChipDefaults.IconSize)
+                    )
+                }
+            } else {
+                null
+            },
+        )
 
         Spacer(modifier = Modifier.width(4.dp))
 
@@ -150,25 +233,17 @@ fun AdvancedSearchScreen() {
 
         Spacer(modifier = Modifier.padding(4.dp))
 
-        CustomDropdownMenu(
-            label = stringResource(id = R.string.address_type),
-            itemList = AddressType.entries.map { stringResource(it.resourceId) }.toTypedArray(),
-            onSelectItem = { selected ->
-                val selectedItem =
-                    AddressType.entries.firstOrNull { (it.description) == selected }
-                if (selectedItem != null) {
-                    address = selectedItem
-                }
-            }
-        )
-
-        Spacer(modifier = Modifier.padding(4.dp))
+        val firstVoivodeshipListElement = stringResource(id = R.string.choose)
 
         CustomDropdownMenu(
             label = stringResource(id = R.string.voivodeship),
-            itemList = Voivodeship.list(),
-            onSelectItem = { selected ->
-                voivodeship = Voivodeship.valueOf(selected)
+            itemList = arrayOf(firstVoivodeshipListElement) + Voivodeship.list(),
+            onSelectItem = { selectedIndex ->
+                if (selectedIndex != 0) {
+                    viewModel.updateWojewodztwo(Voivodeship.entries[selectedIndex - 1])
+                } else {
+                    viewModel.updateWojewodztwo(null)
+                }
             }
         )
 
@@ -184,9 +259,9 @@ fun AdvancedSearchScreen() {
             ) {
                 CustomTextField(
                     label = stringResource(id = R.string.poviat),
-                    value = poviat,
+                    value = state.powiat ?: "",
                     onValueChange = {
-                        poviat = it
+                        viewModel.updatePowiat(it)
                     }
                 )
             }
@@ -196,9 +271,9 @@ fun AdvancedSearchScreen() {
             ) {
                 CustomTextField(
                     label = stringResource(id = R.string.commune),
-                    value = commune,
+                    value = state.gmina ?: "",
                     onValueChange = {
-                        commune = it
+                        viewModel.updateGmina(it)
                     }
                 )
             }
@@ -208,14 +283,32 @@ fun AdvancedSearchScreen() {
 
         Row(
             modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            CustomTextField(
-                label = stringResource(id = R.string.city),
-                value = city,
-                onValueChange = {
-                    city = it
-                }
-            )
+            Column(
+                modifier = Modifier.weight(0.4f),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                CustomTextField(
+                    label = stringResource(id = R.string.postal_code),
+                    value = state.kod ?: "",
+                    onValueChange = {
+                        viewModel.updateKod(it)
+                    }
+                )
+            }
+            Column(
+                modifier = Modifier.weight(0.6f),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                CustomTextField(
+                    label = stringResource(id = R.string.city),
+                    value = state.miasto ?: "",
+                    onValueChange = {
+                        viewModel.updateMiasto(it)
+                    }
+                )
+            }
         }
 
         Row(
@@ -228,9 +321,9 @@ fun AdvancedSearchScreen() {
             ) {
                 CustomTextField(
                     label = stringResource(id = R.string.street),
-                    value = street,
+                    value = state.ulica ?: "",
                     onValueChange = {
-                        street = it
+                        viewModel.updateUlica(it)
                     }
                 )
             }
@@ -240,9 +333,9 @@ fun AdvancedSearchScreen() {
             ) {
                 CustomTextField(
                     label = stringResource(id = R.string.building_number),
-                    value = buildingNumber,
+                    value = state.budynek ?: "",
                     onValueChange = {
-                        buildingNumber = it
+                        viewModel.updateBudynek(it)
                     },
                     keyboardType = KeyboardType.Number
                 )
@@ -253,9 +346,9 @@ fun AdvancedSearchScreen() {
             ) {
                 CustomTextField(
                     label = stringResource(id = R.string.door_number),
-                    value = doorNumber,
+                    value = state.lokal ?: "",
                     onValueChange = {
-                        doorNumber = it
+                        viewModel.updateLokal(it)
                     },
                     keyboardType = KeyboardType.Number
                 )
@@ -264,22 +357,21 @@ fun AdvancedSearchScreen() {
 
         Spacer(modifier = Modifier.padding(4.dp))
 
+        CustomDatePicker(
+            name = stringResource(id = R.string.date_start),
+            date = date
+        )
+
+        Spacer(modifier = Modifier.padding(4.dp))
+
         CustomButton(
             text = stringResource(id = R.string.search_btn),
-            onClick = { /*TODO*/ })
+            onClick = {
+                val queryParams = buildQueryParamsFromObject(state)
+                navController.navigate("${NavigationScreen.ListResult.route}/$queryParams")
+            })
 
         Spacer(modifier = Modifier.padding(4.dp))
     }
-}
 
-private enum class AddressType(val description: String, val resourceId: Int) {
-    MAIN_BUSINESS_PLACE("MAIN_BUSINESS_PLACE", R.string.main_business_place),
-    DELIVERY_ADDRESS("DELIVERY_ADDRESS", R.string.delivery_address),
-    ADDITIONAL_BUSINESS_PLACE("ADDITIONAL_BUSINESS_PLACE", R.string.additional_business_place)
-}
-
-@Preview(showBackground = true)
-@Composable
-fun AdvancedSearchScreenPreview() {
-    AdvancedSearchScreen()
 }

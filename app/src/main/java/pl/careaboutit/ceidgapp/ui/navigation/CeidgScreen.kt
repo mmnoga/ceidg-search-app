@@ -1,5 +1,7 @@
 package pl.careaboutit.ceidgapp.ui.navigation
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -32,17 +34,20 @@ import pl.careaboutit.ceidgapp.ui.screens.HomeMenuScreen
 import pl.careaboutit.ceidgapp.ui.screens.SearchByFiltersResultScreen
 import pl.careaboutit.ceidgapp.ui.screens.SearchFormByNipScreen
 import pl.careaboutit.ceidgapp.ui.screens.SearchFormByPkdScreen
+import pl.careaboutit.ceidgapp.ui.viewmodel.AdvancedSearchViewModel
 import pl.careaboutit.ceidgapp.ui.viewmodel.LocationViewModel
 import pl.careaboutit.ceidgapp.ui.viewmodel.SearchByFiltersResultViewModel
 import pl.careaboutit.ceidgapp.ui.viewmodel.SearchFormByNipViewModel
 import pl.careaboutit.ceidgapp.ui.viewmodel.SearchFormByPkdViewModel
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 private fun MainScreenNavigation(
     navController: NavHostController,
     locationViewModel: LocationViewModel,
     searchFormByNipViewModel: SearchFormByNipViewModel,
-    searchFormByPkdViewModel: SearchFormByPkdViewModel
+    searchFormByPkdViewModel: SearchFormByPkdViewModel,
+    advancedSearchViewModel: AdvancedSearchViewModel
 ) {
     NavHost(
         navController = navController,
@@ -92,7 +97,11 @@ private fun MainScreenNavigation(
         }
 
         composable(route = NavigationScreen.AdvancedSearch.route) {
-            AdvancedSearchScreen()
+            AdvancedSearchScreen(
+                navController = navController,
+                viewModel = advancedSearchViewModel
+            )
+
         }
     }
 }
@@ -134,11 +143,13 @@ fun CeidgAppBar(
     )
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun CeidgApp(
     locationViewModel: LocationViewModel = viewModel(),
     searchFormByNipViewModel: SearchFormByNipViewModel = viewModel(),
     searchFormByPkdViewModel: SearchFormByPkdViewModel = viewModel(),
+    advancedSearchViewModel: AdvancedSearchViewModel = viewModel(),
     navController: NavHostController = rememberNavController()
 ) {
     val currentRoute = currentRoute(navController)
@@ -166,7 +177,8 @@ fun CeidgApp(
                 navController = navController,
                 locationViewModel = locationViewModel,
                 searchFormByNipViewModel = searchFormByNipViewModel,
-                searchFormByPkdViewModel = searchFormByPkdViewModel
+                searchFormByPkdViewModel = searchFormByPkdViewModel,
+                advancedSearchViewModel = advancedSearchViewModel
             )
         }
     }

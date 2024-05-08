@@ -4,10 +4,12 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -19,17 +21,17 @@ import androidx.compose.ui.graphics.Color
 fun CustomDropdownMenu(
     label: String,
     itemList: Array<String>,
-    onSelectItem: (String) -> Unit
+    onSelectItem: (Int) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
-    var selectedItem by remember { mutableStateOf(itemList[0]) }
+    var selectedItemIndex by remember { mutableIntStateOf(0) }
 
     ExposedDropdownMenuBox(
         expanded = expanded,
         onExpandedChange = { expanded = it }
     ) {
-        TextField(
-            value = selectedItem,
+        OutlinedTextField(
+            value = itemList[selectedItemIndex],
             maxLines = 1,
             onValueChange = {},
             label = { Text(text = label) },
@@ -45,13 +47,13 @@ fun CustomDropdownMenu(
             expanded = expanded,
             onDismissRequest = { expanded = false }
         ) {
-            itemList.forEach { item ->
+            itemList.forEachIndexed { index, item ->
                 DropdownMenuItem(
                     text = { Text(text = item) },
                     onClick = {
-                        selectedItem = item
+                        selectedItemIndex = index
                         expanded = false
-                        onSelectItem(item)
+                        onSelectItem(index)
                     }
                 )
             }
