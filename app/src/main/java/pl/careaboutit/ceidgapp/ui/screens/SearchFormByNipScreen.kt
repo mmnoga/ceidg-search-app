@@ -42,7 +42,7 @@ fun SearchFormByNipScreen(
         Spacer(modifier = Modifier.height(15.dp))
         CustomTextField(
             label = stringResource(id = R.string.nip),
-            value = searchState.nip ?: "",
+            value = searchState.nip,
             onValueChange = { viewModel.updateNip(it)
             },
             keyboardType = KeyboardType.Number,

@@ -88,7 +88,7 @@ fun CompanyDetailsItem(
                 )
                 CustomCardText(
                     key = stringResource(id = R.string.telephone),
-                    value = company.telefon ?: "-"
+                    value = company.telefon
                 )
                 CustomCardText(
                     key = stringResource(id = R.string.additional_contact),
@@ -138,7 +138,7 @@ fun CompanyDetailsItem(
                             append("${address.budynek}, ")
                             append(address.kod)
                         }
-                    } ?: "-"
+                    }
                 CustomCardText(
                     key = stringResource(id = R.string.addresses_additional),
                     value = addresses
@@ -164,7 +164,7 @@ fun CompanyDetailsItem(
                 )
                 CustomCardText(
                     key = stringResource(id = R.string.date_start),
-                    value = company.dataRozpoczecia ?: "-"
+                    value = company.dataRozpoczecia
                 )
                 CustomCardText(
                     key = stringResource(id = R.string.date_cancel),
