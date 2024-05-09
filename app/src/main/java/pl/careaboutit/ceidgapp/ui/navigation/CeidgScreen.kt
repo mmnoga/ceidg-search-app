@@ -92,7 +92,7 @@ private fun MainScreenNavigation(
         composable(NavigationScreen.SearchByPkd.route) {
             SearchFormByPkdScreen(
                 navController = navController,
-                viewModel = searchFormByPkdViewModel
+                searchFormViewModel = searchFormByPkdViewModel
             )
         }
 

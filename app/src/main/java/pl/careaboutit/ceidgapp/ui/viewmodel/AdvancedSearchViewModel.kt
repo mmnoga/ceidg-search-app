@@ -67,7 +67,15 @@ class AdvancedSearchViewModel : ViewModel() {
         _advancedSearchState.value = _advancedSearchState.value.copy(miasto = newMiasto)
     }
 
-    fun updateWojewodztwo(newWojewodztwo: Voivodeship?) {
+    fun updateWojewodztwo(newWojewodztwoIndex: Int?) {
+        val newWojewodztwo =
+            if (newWojewodztwoIndex != null && newWojewodztwoIndex > 0
+                && newWojewodztwoIndex <= Voivodeship.entries.size
+            ) {
+                Voivodeship.entries[newWojewodztwoIndex - 1]
+            } else {
+                null
+            }
         _advancedSearchState.value = _advancedSearchState.value.copy(wojewodztwo = newWojewodztwo)
     }
 

@@ -3,7 +3,6 @@ package pl.careaboutit.ceidgapp.ui.viewmodel
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
-import pl.careaboutit.ceidgapp.utils.Utils
 
 data class SearchByPkdState(
     val miasto: String = "",
@@ -21,11 +20,9 @@ class SearchFormByPkdViewModel : ViewModel() {
     }
 
     fun updatePkd(newPkd: String) {
-        _searchByPkdState.value = _searchByPkdState.value.copy(pkd = newPkd)
-    }
+        val cleanedPkd = newPkd.replace(".", "")
 
-    fun isPkdValid(): Boolean {
-        return Utils.isPkdValid(_searchByPkdState.value.pkd)
+        _searchByPkdState.value = _searchByPkdState.value.copy(pkd = cleanedPkd)
     }
 
 }

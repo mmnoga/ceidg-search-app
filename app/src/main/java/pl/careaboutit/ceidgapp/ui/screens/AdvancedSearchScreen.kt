@@ -241,14 +241,9 @@ fun AdvancedSearchScreen(
 
         CustomDropdownMenu(
             label = stringResource(id = R.string.voivodeship),
-            itemList = arrayOf(firstVoivodeshipListElement) + Voivodeship.list(),
-            onSelectItem = { selectedIndex ->
-                if (selectedIndex != 0) {
-                    viewModel.updateWojewodztwo(Voivodeship.entries[selectedIndex - 1])
-                } else {
-                    viewModel.updateWojewodztwo(null)
-                }
-            }
+            items = listOf(firstVoivodeshipListElement) + Voivodeship.list(),
+            selectedIndex = state.wojewodztwo?.let { Voivodeship.entries.indexOf(it) + 1 } ?: 0,
+            onItemSelected = { index, _ -> viewModel.updateWojewodztwo(index) },
         )
 
         Spacer(modifier = Modifier.padding(4.dp))
