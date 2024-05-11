@@ -4,7 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "pkd_table")
-data class DataModel(
+data class Pkd(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
     val code: String,

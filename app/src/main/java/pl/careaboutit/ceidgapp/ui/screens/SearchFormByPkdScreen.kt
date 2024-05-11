@@ -6,9 +6,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -25,7 +25,7 @@ import pl.careaboutit.ceidgapp.ui.screens.components.CustomButton
 import pl.careaboutit.ceidgapp.ui.screens.components.CustomDropdownMenu
 import pl.careaboutit.ceidgapp.ui.screens.components.CustomText
 import pl.careaboutit.ceidgapp.ui.screens.components.CustomTextField
-import pl.careaboutit.ceidgapp.ui.viewmodel.DataModelViewModel
+import pl.careaboutit.ceidgapp.ui.viewmodel.PkdViewModel
 import pl.careaboutit.ceidgapp.ui.viewmodel.SearchFormByPkdViewModel
 import pl.careaboutit.ceidgapp.utils.buildQueryParamsFromObject
 
@@ -33,13 +33,15 @@ import pl.careaboutit.ceidgapp.utils.buildQueryParamsFromObject
 fun SearchFormByPkdScreen(
     navController: NavHostController,
     searchFormViewModel: SearchFormByPkdViewModel = viewModel(),
-    dataModelViewModel: DataModelViewModel = viewModel()
+    viewModel: PkdViewModel = viewModel()
 ) {
     val searchState = searchFormViewModel.searchByPkdState.value
 
-    val pkdList by dataModelViewModel.getAllPkds().observeAsState(emptyList())
+    val pkdListState = viewModel.getAllPkd.collectAsState(initial = listOf())
 
-    var selectedIndex by remember { mutableStateOf(-1) }
+    val pkdList = pkdListState.value
+
+    var selectedIndex by remember { mutableIntStateOf(-1) }
 
     Column(
         modifier = Modifier
