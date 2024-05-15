@@ -92,4 +92,6 @@ dependencies {
 
     implementation (libs.androidx.runtime.livedata)
 
+    implementation(libs.koin.androidx.compose)
+
 }

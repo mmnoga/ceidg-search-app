@@ -12,24 +12,32 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import org.koin.androidx.compose.koinViewModel
+import org.koin.core.parameter.parametersOf
 import pl.careaboutit.ceidgapp.R
 import pl.careaboutit.ceidgapp.ui.navigation.NavigationScreen
 import pl.careaboutit.ceidgapp.ui.screens.components.CustomButton
 import pl.careaboutit.ceidgapp.ui.screens.components.CustomText
 import pl.careaboutit.ceidgapp.ui.screens.components.CustomTextField
-import pl.careaboutit.ceidgapp.ui.viewmodel.SearchFormByNipViewModel
+import pl.careaboutit.ceidgapp.ui.viewmodel.FormState
+import pl.careaboutit.ceidgapp.ui.viewmodel.FormViewModel
+import pl.careaboutit.ceidgapp.utils.Utils.isNipValid
 import pl.careaboutit.ceidgapp.utils.buildQueryParamsFromObject
+import timber.log.Timber
+
+private val initialFormState = FormState(
+    fields = mutableMapOf(
+        "nip" to ""
+    )
+)
 
 @Composable
 fun SearchFormByNipScreen(
     navController: NavHostController,
-    viewModel: SearchFormByNipViewModel = viewModel()
+    viewModel: FormViewModel = koinViewModel { parametersOf(initialFormState) }
 ) {
-    val searchState = viewModel.searchByNipState.value
-
-    val isNipValid = viewModel.isNipValid()
+    val formState = viewModel.state
 
     Column(
         modifier = Modifier
@@ -40,25 +48,33 @@ fun SearchFormByNipScreen(
         Spacer(
             modifier = Modifier.height((LocalConfiguration.current.screenHeightDp / 5).dp)
         )
+
         CustomText(stringResource(id = R.string.text_search))
+
         Spacer(modifier = Modifier.height(15.dp))
+
         CustomTextField(
             label = stringResource(id = R.string.nip),
-            value = searchState.nip,
+            value = formState.fields["nip"] ?: "",
             onValueChange = {
-                viewModel.updateNip(it)
+                viewModel.updateField("nip", it)
             },
             keyboardType = KeyboardType.Number,
-            isError = !isNipValid && searchState.nip.isNotEmpty()
+            isError = !isNipValid(viewModel.getField("nip").toString())
         )
+
         Spacer(modifier = Modifier.height(15.dp))
+
         CustomButton(
             text = stringResource(id = R.string.search_btn),
             onClick = {
-                val queryParams = buildQueryParamsFromObject(searchState)
+                val queryParams = buildQueryParamsFromObject(formState)
+
+                Timber.d("queryParams: $queryParams")
+
                 navController.navigate("${NavigationScreen.ListResult.route}/$queryParams")
             },
-            enabled = isNipValid
+            enabled = isNipValid(viewModel.getField("nip").toString())
         )
     }
 

@@ -55,19 +55,19 @@ fun CompanyDetailsItem(
                 )
                 CustomCardText(
                     key = stringResource(id = R.string.name),
-                    value = company.wlasciciel.imie
+                    value = company.wlasciciel.imie ?: ""
                 )
                 CustomCardText(
                     key = stringResource(id = R.string.surname),
-                    value = company.wlasciciel.nazwisko
+                    value = company.wlasciciel.nazwisko ?: ""
                 )
                 CustomCardText(
                     key = stringResource(id = R.string.nip),
-                    value = company.wlasciciel.nip
+                    value = company.wlasciciel.nip ?: ""
                 )
                 CustomCardText(
                     key = stringResource(id = R.string.regon),
-                    value = company.wlasciciel.regon
+                    value = company.wlasciciel.regon ?: ""
                 )
                 CustomCardText(
                     key = stringResource(id = R.string.company),

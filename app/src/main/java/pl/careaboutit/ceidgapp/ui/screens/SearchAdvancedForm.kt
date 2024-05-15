@@ -30,8 +30,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import org.koin.androidx.compose.koinViewModel
+import org.koin.core.parameter.parametersOf
 import pl.careaboutit.ceidgapp.R
 import pl.careaboutit.ceidgapp.ui.navigation.NavigationScreen
 import pl.careaboutit.ceidgapp.ui.screens.components.CustomButton
@@ -39,28 +40,50 @@ import pl.careaboutit.ceidgapp.ui.screens.components.CustomDatePicker
 import pl.careaboutit.ceidgapp.ui.screens.components.CustomDropdownMenu
 import pl.careaboutit.ceidgapp.ui.screens.components.CustomText
 import pl.careaboutit.ceidgapp.ui.screens.components.CustomTextField
-import pl.careaboutit.ceidgapp.ui.viewmodel.AdvancedSearchViewModel
+import pl.careaboutit.ceidgapp.ui.viewmodel.FormState
+import pl.careaboutit.ceidgapp.ui.viewmodel.FormViewModel
 import pl.careaboutit.ceidgapp.utils.Status
 import pl.careaboutit.ceidgapp.utils.Voivodeship
 import pl.careaboutit.ceidgapp.utils.buildQueryParamsFromObject
+import timber.log.Timber
 import java.time.LocalDate
+
+private val initialFormState = FormState(
+    fields = mutableMapOf(
+        "nip" to "",
+        "regon" to "",
+        "nazwa" to "",
+        "imie" to "",
+        "nazwisko" to "",
+        "ulica" to "",
+        "budynek" to "",
+        "lokal" to "",
+        "miasto" to "",
+        "wojewodztwo" to Voivodeship.BRAK,
+        "powiat" to "",
+        "gmina" to "",
+        "kod" to "",
+        "pkd" to "",
+        "dataod" to "",
+        "status" to emptyList<Status>(),
+    )
+)
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun AdvancedSearchScreen(
+fun SearchAdvancedForm(
     navController: NavHostController,
-    viewModel: AdvancedSearchViewModel = viewModel()
+    viewModel: FormViewModel = koinViewModel { parametersOf(initialFormState) }
 ) {
-    val state = viewModel.advancedSearchState.value
+    val formState = viewModel.state
 
-    var includeActive by rememberSaveable { mutableStateOf(true) }
     var includeArchived by rememberSaveable { mutableStateOf(false) }
+
     var includeRequiringVerification by rememberSaveable { mutableStateOf(false) }
 
     var statusList by remember { mutableStateOf<List<Status>>(emptyList()) }
-    DisposableEffect(includeActive, includeArchived, includeRequiringVerification) {
+    DisposableEffect(includeArchived, includeRequiringVerification) {
         statusList = mutableListOf<Status>().apply {
-            if (includeActive) add(Status.AKTYWNY)
             if (includeArchived) add(Status.WYKRESLONY)
             if (includeRequiringVerification) add(Status.OCZEKUJE_NA_ROZPOCZECIE_DZIALANOSCI)
         }
@@ -68,13 +91,13 @@ fun AdvancedSearchScreen(
     }
 
     LaunchedEffect(statusList) {
-        viewModel.updateStatus(statusList)
+        viewModel.updateField("status", statusList)
     }
 
     val date = remember { mutableStateOf(LocalDate.now().minusYears(100)) }
 
-    LaunchedEffect(date) {
-        viewModel.updateDataod(date.toString())
+    LaunchedEffect(formState) {
+        viewModel.updateField("dataod", date.value.toString())
     }
 
     Column(
@@ -104,9 +127,9 @@ fun AdvancedSearchScreen(
                 ) {
                     CustomTextField(
                         label = stringResource(id = R.string.nip),
-                        value = state.nip ?: "",
+                        value = formState.fields["nip"] ?: "",
                         onValueChange = {
-                            viewModel.updateNip(it)
+                            viewModel.updateField("nip", it)
                         }
                     )
                 }
@@ -117,9 +140,9 @@ fun AdvancedSearchScreen(
                 ) {
                     CustomTextField(
                         label = stringResource(id = R.string.regon),
-                        value = state.regon ?: "",
+                        value = formState.fields["regon"] ?: "",
                         onValueChange = {
-                            viewModel.updateRegon(it)
+                            viewModel.updateField("regon", it)
                         }
                     )
                 }
@@ -130,9 +153,9 @@ fun AdvancedSearchScreen(
 
         CustomTextField(
             label = stringResource(id = R.string.firm_name),
-            value = state.nazwa ?: "",
+            value = formState.fields["nazwa"] ?: "",
             onValueChange = {
-                viewModel.updateNazwa(it)
+                viewModel.updateField("nazwa", it)
             }
         )
 
@@ -152,9 +175,9 @@ fun AdvancedSearchScreen(
                 ) {
                     CustomTextField(
                         label = stringResource(id = R.string.name),
-                        value = state.imie ?: "",
+                        value = formState.fields["imie"] ?: "",
                         onValueChange = {
-                            viewModel.updateImie(it)
+                            viewModel.updateField("imie", it)
                         }
                     )
                 }
@@ -165,35 +188,14 @@ fun AdvancedSearchScreen(
                 ) {
                     CustomTextField(
                         label = stringResource(id = R.string.surname),
-                        value = state.nazwisko ?: "",
+                        value = formState.fields["nazwisko"] ?: "",
                         onValueChange = {
-                            viewModel.updateNazwisko(it)
+                            viewModel.updateField("nazwisko", it)
                         }
                     )
                 }
             }
         }
-
-        Spacer(modifier = Modifier.width(4.dp))
-
-        FilterChip(
-            onClick = { includeActive = !includeActive },
-            label = {
-                Text(stringResource(id = R.string.include_active))
-            },
-            selected = includeActive,
-            leadingIcon = if (includeActive) {
-                {
-                    Icon(
-                        imageVector = Icons.Filled.Done,
-                        contentDescription = "Done icon",
-                        modifier = Modifier.size(FilterChipDefaults.IconSize)
-                    )
-                }
-            } else {
-                null
-            },
-        )
 
         Spacer(modifier = Modifier.width(4.dp))
 
@@ -237,13 +239,16 @@ fun AdvancedSearchScreen(
 
         Spacer(modifier = Modifier.padding(4.dp))
 
-        val firstVoivodeshipListElement = stringResource(id = R.string.choose)
-
         CustomDropdownMenu(
             label = stringResource(id = R.string.voivodeship),
-            items = listOf(firstVoivodeshipListElement) + Voivodeship.list(),
-            selectedIndex = state.wojewodztwo?.let { Voivodeship.entries.indexOf(it) + 1 } ?: 0,
-            onItemSelected = { index, _ -> viewModel.updateWojewodztwo(index) },
+            items = Voivodeship.list(),
+            selectedIndex = formState.fields["wojewodztwo"]?.let { selectedWojewodztwo ->
+                Voivodeship.entries.toTypedArray()
+                    .indexOfFirst { it.displayName == selectedWojewodztwo }
+            } ?: -1,
+            onItemSelected = { index, item ->
+                viewModel.updateField("wojewodztwo", item)
+            }
         )
 
         Spacer(modifier = Modifier.padding(4.dp))
@@ -258,21 +263,22 @@ fun AdvancedSearchScreen(
             ) {
                 CustomTextField(
                     label = stringResource(id = R.string.poviat),
-                    value = state.powiat ?: "",
+                    value = formState.fields["powiat"] ?: "",
                     onValueChange = {
-                        viewModel.updatePowiat(it)
+                        viewModel.updateField("powiat", it)
                     }
                 )
             }
+
             Column(
                 modifier = Modifier.weight(1f),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 CustomTextField(
                     label = stringResource(id = R.string.commune),
-                    value = state.gmina ?: "",
+                    value = formState.fields["gmina"] ?: "",
                     onValueChange = {
-                        viewModel.updateGmina(it)
+                        viewModel.updateField("gmina", it)
                     }
                 )
             }
@@ -290,21 +296,22 @@ fun AdvancedSearchScreen(
             ) {
                 CustomTextField(
                     label = stringResource(id = R.string.postal_code),
-                    value = state.kod ?: "",
+                    value = formState.fields["kod"] ?: "",
                     onValueChange = {
-                        viewModel.updateKod(it)
+                        viewModel.updateField("kod", it)
                     }
                 )
             }
+
             Column(
                 modifier = Modifier.weight(0.6f),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 CustomTextField(
                     label = stringResource(id = R.string.city),
-                    value = state.miasto ?: "",
+                    value = formState.fields["miasto"] ?: "",
                     onValueChange = {
-                        viewModel.updateMiasto(it)
+                        viewModel.updateField("miasto", it)
                     }
                 )
             }
@@ -320,34 +327,36 @@ fun AdvancedSearchScreen(
             ) {
                 CustomTextField(
                     label = stringResource(id = R.string.street),
-                    value = state.ulica ?: "",
+                    value = formState.fields["ulica"] ?: "",
                     onValueChange = {
-                        viewModel.updateUlica(it)
+                        viewModel.updateField("ulica", it)
                     }
                 )
             }
+
             Column(
                 modifier = Modifier.weight(0.28f),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 CustomTextField(
                     label = stringResource(id = R.string.building_number),
-                    value = state.budynek ?: "",
+                    value = formState.fields["budynek"] ?: "",
                     onValueChange = {
-                        viewModel.updateBudynek(it)
+                        viewModel.updateField("budynek", it)
                     },
                     keyboardType = KeyboardType.Number
                 )
             }
+
             Column(
                 modifier = Modifier.weight(0.24f),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 CustomTextField(
                     label = stringResource(id = R.string.door_number),
-                    value = state.lokal ?: "",
+                    value = formState.fields["lokal"] ?: "",
                     onValueChange = {
-                        viewModel.updateLokal(it)
+                        viewModel.updateField("lokal", it)
                     },
                     keyboardType = KeyboardType.Number
                 )
@@ -366,7 +375,10 @@ fun AdvancedSearchScreen(
         CustomButton(
             text = stringResource(id = R.string.search_btn),
             onClick = {
-                val queryParams = buildQueryParamsFromObject(state)
+                val queryParams = buildQueryParamsFromObject(formState)
+
+                Timber.d("queryParams: $queryParams")
+
                 navController.navigate("${NavigationScreen.ListResult.route}/$queryParams")
             })
 

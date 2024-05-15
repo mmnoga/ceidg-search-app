@@ -28,11 +28,14 @@ sealed class NavigationScreen(
     data object ListResult :
         NavigationScreen("ListResult", R.string.search_result)
 
+    data object SearchForm :
+        NavigationScreen("SearchForm", R.string.advanced_search)
+
     companion object {
         val allScreens: List<NavigationScreen>
             get() = listOf(
                 Home, SearchByNip, Details, CompanyLocation,
-                SearchByPkd, AdvancedSearch, ListResult
+                SearchByPkd, AdvancedSearch, ListResult, SearchForm
             )
     }
 

@@ -12,8 +12,8 @@ fun Company.toDisplayable(): CompanyElementDisplayable {
     return CompanyElementDisplayable(
         id = id,
         nazwa = nazwa,
-        wlasciciel = wlasciciel,
-        status = status,
-        miasto = adresDzialalnosci.miasto ?: ""
+        wlasciciel = wlasciciel!!,
+        status = status ?: "",
+        miasto = adresDzialalnosci?.miasto ?: ""
     )
 }

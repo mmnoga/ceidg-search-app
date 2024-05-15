@@ -1,6 +1,7 @@
 package pl.careaboutit.ceidgapp.utils
 
 enum class Voivodeship(val displayName: String) {
+    BRAK("Brak"),
     DOLNOSLASKIE("Dolnośląskie"),
     KUJAWSKO_POMORSKIE("Kujawsko-Pomorskie"),
     LODZKIE("Łódzkie"),
@@ -19,8 +20,8 @@ enum class Voivodeship(val displayName: String) {
     ZACHODNIOPOMORSKIE("Zachodniopomorskie");
 
     companion object {
-        fun list(): Array<String> {
-            return entries.map { it.displayName }.toTypedArray()
+        fun list(): List<String> {
+            return entries.map { it.displayName }
         }
     }
 }

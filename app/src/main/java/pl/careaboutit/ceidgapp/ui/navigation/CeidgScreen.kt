@@ -27,27 +27,21 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import pl.careaboutit.ceidgapp.R
-import pl.careaboutit.ceidgapp.ui.screens.AdvancedSearchScreen
 import pl.careaboutit.ceidgapp.ui.screens.CompanyDetailsScreen
 import pl.careaboutit.ceidgapp.ui.screens.CompanyLocationScreen
 import pl.careaboutit.ceidgapp.ui.screens.HomeMenuScreen
+import pl.careaboutit.ceidgapp.ui.screens.SearchAdvancedForm
 import pl.careaboutit.ceidgapp.ui.screens.SearchByFiltersResultScreen
 import pl.careaboutit.ceidgapp.ui.screens.SearchFormByNipScreen
 import pl.careaboutit.ceidgapp.ui.screens.SearchFormByPkdScreen
-import pl.careaboutit.ceidgapp.ui.viewmodel.AdvancedSearchViewModel
 import pl.careaboutit.ceidgapp.ui.viewmodel.LocationViewModel
 import pl.careaboutit.ceidgapp.ui.viewmodel.SearchByFiltersResultViewModel
-import pl.careaboutit.ceidgapp.ui.viewmodel.SearchFormByNipViewModel
-import pl.careaboutit.ceidgapp.ui.viewmodel.SearchFormByPkdViewModel
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 private fun MainScreenNavigation(
     navController: NavHostController,
-    locationViewModel: LocationViewModel,
-    searchFormByNipViewModel: SearchFormByNipViewModel,
-    searchFormByPkdViewModel: SearchFormByPkdViewModel,
-    advancedSearchViewModel: AdvancedSearchViewModel
+    locationViewModel: LocationViewModel
 ) {
     NavHost(
         navController = navController,
@@ -61,8 +55,7 @@ private fun MainScreenNavigation(
 
         composable(NavigationScreen.SearchByNip.route) {
             SearchFormByNipScreen(
-                navController = navController,
-                viewModel = searchFormByNipViewModel
+                navController = navController
             )
         }
 
@@ -91,19 +84,15 @@ private fun MainScreenNavigation(
 
         composable(NavigationScreen.SearchByPkd.route) {
             SearchFormByPkdScreen(
-                navController = navController,
-                searchFormViewModel = searchFormByPkdViewModel
+                navController = navController
             )
         }
 
-        composable(route = NavigationScreen.AdvancedSearch.route) {
-            AdvancedSearchScreen(
-                navController = navController,
-                viewModel = advancedSearchViewModel
-            )
-
+        composable(route = NavigationScreen.SearchForm.route) {
+            SearchAdvancedForm(navController = navController)
         }
     }
+
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -147,9 +136,6 @@ fun CeidgAppBar(
 @Composable
 fun CeidgApp(
     locationViewModel: LocationViewModel = viewModel(),
-    searchFormByNipViewModel: SearchFormByNipViewModel = viewModel(),
-    searchFormByPkdViewModel: SearchFormByPkdViewModel = viewModel(),
-    advancedSearchViewModel: AdvancedSearchViewModel = viewModel(),
     navController: NavHostController = rememberNavController()
 ) {
     val currentRoute = currentRoute(navController)
@@ -175,10 +161,7 @@ fun CeidgApp(
         ) {
             MainScreenNavigation(
                 navController = navController,
-                locationViewModel = locationViewModel,
-                searchFormByNipViewModel = searchFormByNipViewModel,
-                searchFormByPkdViewModel = searchFormByPkdViewModel,
-                advancedSearchViewModel = advancedSearchViewModel
+                locationViewModel = locationViewModel
             )
         }
     }

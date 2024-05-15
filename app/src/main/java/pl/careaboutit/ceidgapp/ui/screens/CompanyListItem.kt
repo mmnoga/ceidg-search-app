@@ -101,7 +101,7 @@ fun CompanyListItem(
                     )
                     Text(
                         modifier = Modifier.weight(6f),
-                        text = company.wlasciciel.nip,
+                        text = company.wlasciciel.nip ?: "",
                         style = MaterialTheme.typography.bodyMedium
                     )
                 }
@@ -116,7 +116,7 @@ fun CompanyListItem(
                     )
                     Text(
                         modifier = Modifier.weight(6f),
-                        text = company.wlasciciel.regon,
+                        text = company.wlasciciel.regon ?: "",
                         style = MaterialTheme.typography.bodyMedium
                     )
                 }

@@ -33,11 +33,11 @@ data class Properties(
 data class Company(
     val id: String,
     val nazwa: String,
-    val adresDzialalnosci: Address,
-    val wlasciciel: Owner,
-    val dataRozpoczecia: String,
-    val status: String,
-    val link: String
+    val adresDzialalnosci: Address? = null,
+    val wlasciciel: Owner? = null,
+    val dataRozpoczecia: String? = null,
+    val status: String? = null,
+    val link: String? = null
 )
 
 @Serializable
@@ -57,8 +57,8 @@ data class Address(
 
 @Serializable
 data class Owner(
-    val imie: String,
-    val nazwisko: String,
-    val nip: String,
-    val regon: String
+    val imie: String? = null,
+    val nazwisko: String? = null,
+    val nip: String? = null,
+    val regon: String? = null
 )

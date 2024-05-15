@@ -11,14 +11,14 @@ import androidx.compose.ui.text.input.KeyboardType
 @Composable
 fun CustomTextField(
     label: String,
-    value: String,
+    value: Any,
     onValueChange: (String) -> Unit,
     keyboardType: KeyboardType = KeyboardType.Text,
     isError: Boolean = false
 ) {
     OutlinedTextField(
         modifier = Modifier.fillMaxWidth(),
-        value = value,
+        value = value as? String ?: "",
         onValueChange = onValueChange,
         label = { Text(text = label) },
         keyboardOptions = KeyboardOptions.Default.copy(

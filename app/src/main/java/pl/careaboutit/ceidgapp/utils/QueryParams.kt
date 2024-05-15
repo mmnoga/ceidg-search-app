@@ -2,14 +2,46 @@ package pl.careaboutit.ceidgapp.utils
 
 import pl.careaboutit.ceidgapp.data.model.DynamicRequest
 import pl.careaboutit.ceidgapp.data.model.QueryRequest
+import pl.careaboutit.ceidgapp.ui.viewmodel.FormState
 
-fun buildQueryParamsFromObject(obj: Any): String {
-    val fields = obj::class.java.declaredFields
-    val params = fields.joinToString("&") { field ->
-        field.isAccessible = true
-        "${field.name}=${field.get(obj)}"
-    }
-    return params
+fun buildQueryParamsFromObject(obj: FormState): String {
+    val fields = obj.fields.toMutableMap()
+
+    val statusParams = getStatusParams(fields)
+    val otherParams = getOtherParams(fields)
+
+    return listOf(statusParams, otherParams)
+        .filter { it.isNotEmpty() }
+        .joinToString("&")
+}
+
+private fun getStatusParams(fields: MutableMap<String, Any>): String {
+    return fields["status"]?.let { status ->
+        when (status) {
+            is List<*> -> {
+                val statusList = status.filterIsInstance<Status>()
+                if (statusList.isNotEmpty()) {
+                    statusList.joinToString("&") { "status=${it.name}" }
+                } else {
+                    ""
+                }
+            }
+
+            else -> ""
+        }
+    } ?: ""
+}
+
+private fun getOtherParams(fields: MutableMap<String, Any>): String {
+    return fields.entries
+        .filter {
+            it.key != "status" &&
+                    it.value != "" &&
+                    !(it.key == "wojewodztwo" && it.value == Voivodeship.BRAK)
+        }
+        .joinToString("&") { (key, value) ->
+            "$key=$value"
+        }
 }
 
 fun parseDynamicQueryParams(queryParams: String): QueryRequest {
@@ -64,4 +96,5 @@ fun mapQueryRequestToDynamicRequest(queryRequest: QueryRequest): DynamicRequest 
             "status" to queryRequest.status.orEmpty()
         )
     )
+
 }
